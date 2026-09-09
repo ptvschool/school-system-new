@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ຕັ້ງຄ່າ - Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Noto Sans Lao', sans-serif; }
+        .tab-btn.active {
+            background-color: #2563eb;
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+        .tab-btn-danger.active {
+            background-color: #dc2626;
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 p-3 sm:p-6 antialiased min-h-screen">
+
+    <div class="max-w-5xl mx-auto space-y-4 sm:space-y-6">
+        
+        <!-- Header -->
+        <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
+            <div class="p-2.5 sm:p-3 bg-blue-50 text-blue-600 rounded-xl text-xl sm:text-2xl shrink-0">⚙️</div>
+            <div>
+                <h1 class="text-lg sm:text-xl font-bold text-slate-800">ຕັ້ງຄ່າລະບົບສູນພາສາ</h1>
+                <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 leading-tight">ຈັດການຂໍ້ມູນສະຖາບັນ, ຄ່າຮຽນ, ລະຫັດນັກຮຽນ, ຫ້ອງຮຽນຕາມລະດັບຊັ້ນ, ວິຊາຮຽນ ແລະ ຮີເຊັດຂໍ້ມູນ</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex overflow-x-auto gap-2 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm text-xs sm:text-sm font-semibold no-scrollbar">
+            <button id="tab-btn-center" onclick="switchSettingTab('center')" class="tab-btn active px-4 sm:px-5 py-2.5 rounded-xl transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                🏫 ຂໍ້ມູນສູນ
+            </button>
+            <button id="tab-btn-tuition" onclick="switchSettingTab('tuition')" class="tab-btn px-4 sm:px-5 py-2.5 text-slate-600 hover:bg-slate-100 rounded-xl transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                💵 ຄ່າຮຽນ
+            </button>
+            <button id="tab-btn-discount" onclick="switchSettingTab('discount')" class="tab-btn px-4 sm:px-5 py-2.5 text-slate-600 hover:bg-slate-100 rounded-xl transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                🏷️ ສ່ວນຫຼຸດ
+            </button>
+            <button id="tab-btn-studentid" onclick="switchSettingTab('studentid')" class="tab-btn px-4 sm:px-5 py-2.5 text-slate-600 hover:bg-slate-100 rounded-xl transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                🆔 ລະຫັດນັກຮຽນ
+            </button>
+            <button id="tab-btn-schedule" onclick="switchSettingTab('schedule')" class="tab-btn px-4 sm:px-5 py-2.5 text-slate-600 hover:bg-slate-100 rounded-xl transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                🏫 ຫ້ອງຮຽນ (ປະຖົມ/ມ.ຕົ້ນ/ອະນຸບານ)
+            </button>
+            <button id="tab-btn-subject" onclick="switchSettingTab('subject')" class="tab-btn px-4 sm:px-5 py-2.5 text-slate-600 hover:bg-slate-100 rounded-xl transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                📚 ວິຊາຮຽນ
+            </button>
+            <button id="tab-btn-reset" onclick="switchSettingTab('reset')" class="tab-btn px-4 sm:px-5 py-2.5 text-red-600 hover:bg-red-50 rounded-xl transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ml-auto">
+                🧹 ຮີເຊັດຂໍ້ມູນ
+            </button>
+        </div>
+
+        <!-- TAB 1: ຂໍ້ມູນສະຖາບັນ -->
+        <div id="setting-center" class="setting-content bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 sm:space-y-5">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                🏛️ ຂໍ້ມູນສະຖາບັນ (ສຳລັບອອກໃບບິນ)
+            </h3>
+            <form id="centerForm" class="space-y-4 max-w-2xl">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ຊື່ໂຮງຮຽນ / ສູນພາສາ</label>
+                    <input type="text" id="schoolName" value="ສູນພາສາອັງກິດ-ພາສາຈີນປານຕາວັນ" class="w-full px-3.5 py-2.5 sm:py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ເບີໂທຕິດຕໍ່</label>
+                    <input type="text" id="schoolPhone" value="02055221101" class="w-full px-3.5 py-2.5 sm:py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ທີ່ຢູ່ສະຖາບັນ</label>
+                    <textarea id="schoolAddress" rows="3" class="w-full px-3.5 py-2.5 sm:py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">ບ້ານ ນໍ້າງາດ, ເມືອງ ວັງວຽງ, ແຂວງ ວຽງຈັນ</textarea>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" id="btnSaveCenter" class="w-full sm:w-auto px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer">
+                        💾 ບັນທຶກຂໍ້ມູນສູນ
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- TAB 2: ຕັ້ງຄ່າຄ່າຮຽນ (ແບ່ງຕາມຊັ້ນຮຽນ ແລະ ຕາມອາຍຸ) -->
+        <div id="setting-tuition" class="setting-content hidden bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                💵 ຕັ້ງຄ່າອັດຕາຄ່າຮຽນ (ແບ່ງຕາມຊັ້ນ ແລະ ຕາມອາຍຸ)
+            </h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 1. ລາຄາຄົງທີ່ຕາມຊັ້ນຮຽນ (ມ.ຕົ້ນ, ປະຖົມ, ອະນຸບານ 2-3) -->
+                <div class="space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h4 class="font-bold text-slate-700 text-xs sm:text-sm flex items-center gap-1.5">
+                        🔹 ມາດຕະຖານຄ່າຮຽນຕາມຊັ້ນຮຽນ
+                    </h4>
+                    <form id="tuitionForm" class="space-y-3">
+                        <input type="hidden" id="tuitionEditId">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">ເລືອກຊັ້ນຮຽນ</label>
+                            <select id="courseLevel" required class="w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="ມັດທະຍົມຕອນຕົ້ນ">ມັດທະຍົມຕອນຕົ້ນ (ມ.ຕົ້ນ)</option>
+                                <option value="ປະຖົມ">ປະຖົມ</option>
+                                <option value="ອະນຸບານ 2-3">ອະນຸບານ 2 ແລະ 3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">ຈຳນວນເງິນຄ່າຮຽນ (ກີບ)</label>
+                            <input type="number" id="coursePrice" placeholder="ເຊັ່ນ: 500000" required class="w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex items-center gap-2 pt-1">
+                            <button type="submit" id="btnTuitionSubmit" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs transition cursor-pointer">
+                                ➕ ເພີ່ມຄ່າຮຽນຕາມຊັ້ນ
+                            </button>
+                            <button type="button" id="btnTuitionCancel" onclick="resetTuitionForm()" class="hidden px-3 py-2 bg-slate-400 hover:bg-slate-500 text-white font-semibold rounded-xl text-xs transition cursor-pointer">
+                                ຍົກເລີກ
+                            </button>
+                        </div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2.5">ຊັ້ນຮຽນ</th>
+                                    <th class="p-2.5">ຈຳນວນເງິນ (₭)</th>
+                                    <th class="p-2.5 text-center w-24">ຈັດການ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tuitionList" class="divide-y divide-slate-100">
+                                <tr><td colspan="3" class="p-3 text-center text-slate-400">ກຳລັງໂຫຼດ...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. ລາຄາຕາມອາຍຸ (ອະນຸບານ 1 ແລະ ລ້ຽງເດັກ) -->
+                <div class="space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h4 class="font-bold text-slate-700 text-xs sm:text-sm flex items-center gap-1.5">
+                        👶 ລາຄາຕາມຊ່ວງອາຍຸ (ອະນຸບານ 1 / ລ້ຽງເດັກ)
+                    </h4>
+                    <form id="ageTuitionForm" class="space-y-3">
+                        <input type="hidden" id="ageTuitionEditId">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">ກຸ່ມເປົ້າໝາຍ / ຊັ້ນ</label>
+                            <select id="ageGroupCategory" required class="w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="ລ້ຽງເດັກ">ຫ້ອງລ້ຽງເດັກ</option>
+                                <option value="ອະນຸບານ 1">ຊັ້ນອະນຸບານ 1</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">ອາຍຸເລີ່ມຕົ້ນ (ປີ/ເດືອນ)</label>
+                                <input type="text" id="ageMin" placeholder="ເຊັ່ນ: 1 ປີ 6 ເດືອນ" required class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">ເຖິງອາຍຸ (ປີ/ເດືອນ)</label>
+                                <input type="text" id="ageMax" placeholder="ເຊັ່ນ: 2 ປີ" required class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">ຈຳນວນເງິນຄ່າຮຽນ (ກີບ)</label>
+                            <input type="number" id="agePrice" placeholder="ເຊັ່ນ: 450000" required class="w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div class="flex items-center gap-2 pt-1">
+                            <button type="submit" id="btnAgeTuitionSubmit" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs transition cursor-pointer">
+                                ➕ ເພີ່ມລາຄາຕາມອາຍຸ
+                            </button>
+                            <button type="button" id="btnAgeTuitionCancel" onclick="resetAgeTuitionForm()" class="hidden px-3 py-2 bg-slate-400 hover:bg-slate-500 text-white font-semibold rounded-xl text-xs transition cursor-pointer">
+                                ຍົກເລີກ
+                            </button>
+                        </div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2.5">ຊັ້ນ/ປະເພດ</th>
+                                    <th class="p-2.5">ຊ່ວງອາຍຸ</th>
+                                    <th class="p-2.5">ຈຳນວນເງິນ (₭)</th>
+                                    <th class="p-2.5 text-center w-24">ຈັດການ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ageTuitionList" class="divide-y divide-slate-100">
+                                <tr><td colspan="4" class="p-3 text-center text-slate-400">ກຳລັງໂຫຼດ...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: ຕັ້ງຄ່າສ່ວນຫຼຸດ -->
+        <div id="setting-discount" class="setting-content hidden bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                🏷️ ຕັ້ງຄ່າປະເພດສ່ວນຫຼຸດ
+            </h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 1. ສ່ວນຫຼຸດທົ່ວໄປ -->
+                <div class="space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h4 class="font-bold text-slate-700 text-xs sm:text-sm flex items-center gap-1.5">
+                        🔹 ສ່ວນຫຼຸດທົ່ວໄປ (ສຳລັບຄິດໄລ່ເງິນ)
+                    </h4>
+                    <form id="generalDiscountForm" class="space-y-3">
+                        <input type="hidden" id="genDiscountEditId">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">ຈຳນວນເງິນສ່ວນຫຼຸດ (ກີບ)</label>
+                            <input type="number" id="genDiscountAmount" placeholder="ເຊັ່ນ: 50000" required class="w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex items-center gap-2 pt-1">
+                            <button type="submit" id="btnGenDiscountSubmit" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs transition cursor-pointer">
+                                ➕ ເພີ່ມສ່ວນຫຼຸດທົ່ວໄປ
+                            </button>
+                            <button type="button" id="btnGenDiscountCancel" onclick="resetGenDiscountForm()" class="hidden px-3 py-2 bg-slate-400 hover:bg-slate-500 text-white font-semibold rounded-xl text-xs transition cursor-pointer">
+                                ຍົກເລີກ
+                            </button>
+                        </div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2.5">ຈຳນວນເງິນ (₭)</th>
+                                    <th class="p-2.5 text-center w-24">ຈັດການ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="generalDiscountList" class="divide-y divide-slate-100">
+                                <tr><td colspan="2" class="p-3 text-center text-slate-400">ກຳລັງໂຫຼດ...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. ສ່ວນຫຼຸດກໍລະນີອ້າຍນ້ອງ -->
+                <div class="space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h4 class="font-bold text-slate-700 text-xs sm:text-sm flex items-center gap-1.5">
+                        👥 ສ່ວນຫຼຸດກໍລະນີອ້າຍນ້ອງ (ສຳລັບຄອບຄົວ)
+                    </h4>
+                    <form id="siblingDiscountForm" class="space-y-3">
+                        <input type="hidden" id="sibDiscountEditId">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">ຈຳນວນເງິນສ່ວນຫຼຸດ (ກີບ)</label>
+                            <input type="number" id="sibDiscountAmount" placeholder="ເຊັ່ນ: 100000" required class="w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex items-center gap-2 pt-1">
+                            <button type="submit" id="btnSibDiscountSubmit" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs transition cursor-pointer">
+                                ➕ ເພີ່ມສ່ວນຫຼຸດອ້າຍນ້ອງ
+                            </button>
+                            <button type="button" id="btnSibDiscountCancel" onclick="resetSibDiscountForm()" class="hidden px-3 py-2 bg-slate-400 hover:bg-slate-500 text-white font-semibold rounded-xl text-xs transition cursor-pointer">
+                                ຍົກເລີກ
+                            </button>
+                        </div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2.5">ຈຳນວນເງິນ (₭)</th>
+                                    <th class="p-2.5 text-center w-24">ຈັດການ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="siblingDiscountList" class="divide-y divide-slate-100">
+                                <tr><td colspan="2" class="p-3 text-center text-slate-400">ກຳລັງໂຫຼດ...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: ຕັ້ງຄ່າລະຫັດນັກຮຽນ -->
+        <div id="setting-studentid" class="setting-content hidden bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 sm:space-y-5">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                🆔 ຕັ້ງຄ່າຕົວອັກສອນນຳໜ້າລະຫັດນັກຮຽນ (Prefix)
+            </h3>
+            <form id="studentIdForm" class="space-y-4 max-w-xl">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ຕົວອັກສອນນຳໜ້າ (Prefix)</label>
+                    <input type="text" id="idPrefix" placeholder="ເຊັ່ນ: STD, ENG, CHI" required class="w-full px-3.5 py-2.5 sm:py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <p class="text-[11px] text-slate-400 mt-1">* ລະບົບຈະນຳໃຊ້ Prefix ນີ້ໄປສ້າງລະຫັດອັດໂນມັດ ເຊັ່ນ: <span id="previewCode" class="font-bold text-blue-600">STD-001</span></p>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full sm:w-auto px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition cursor-pointer">
+                        💾 ບັນທຶກ Prefix
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- TAB 5: ຫ້ອງຮຽນ -->
+        <div id="setting-schedule" class="setting-content hidden bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                🏫 ຕັ້ງຄ່າ / ເພີ່ມຫ້ອງຮຽນ (ແຍກຕາມລະດັບຊັ້ນ)
+            </h3>
+            <form id="scheduleForm" class="space-y-4 bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200">
+                <input type="hidden" id="scheduleEditId">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">ລະດັບຊັ້ນ</label>
+                        <select id="schedLevel" required class="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="ປະຖົມ">ປະຖົມ</option>
+                            <option value="ມັດທະຍົມຕອນຕົ້ນ">ມັດທະຍົມຕອນຕົ້ນ</option>
+                            <option value="ອະນຸບານ">ອະນຸບານ (ບໍ່ມີວິຊາ)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">ຊື່ຫ້ອງຮຽນ</label>
+                        <input type="text" id="schedTitle" placeholder="ເຊັ່ນ: ຫ້ອງ ປະຖົມ 1, ມ.1/1" required class="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">ເລືອກຄູປະຈຳຫ້ອງ</label>
+                        <div id="teacherCheckboxesContainer" class="max-h-36 overflow-y-auto bg-white border border-slate-200 rounded-xl p-3 space-y-2">
+                            <span class="text-xs text-slate-400">ກຳລັງໂຫຼດລາຍຊື່ຄູ...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" id="btnSchedCancel" onclick="resetScheduleForm()" class="hidden px-4 py-2 bg-slate-400 hover:bg-slate-500 text-white font-semibold rounded-xl text-sm transition cursor-pointer">
+                        ຍົກເລີກ
+                    </button>
+                    <button type="submit" id="btnSchedSubmit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition cursor-pointer">
+                        ➕ ເພີ່ມຫ້ອງຮຽນ
+                    </button>
+                </div>
+            </form>
+            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                        <tr>
+                            <th class="p-3">ລະດັບຊັ້ນ</th>
+                            <th class="p-3">ຊື່ຫ້ອງຮຽນ</th>
+                            <th class="p-3">ຄູປະຈຳຫ້ອງ</th>
+                            <th class="p-3 text-center w-36 sm:w-40">ຈັດການ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleList" class="divide-y divide-slate-100">
+                        <tr><td colspan="4" class="p-4 text-center text-slate-400">ກຳລັງໂຫຼດຂໍ້ມູນ...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 6: ວິຊາຮຽນ -->
+        <div id="setting-subject" class="setting-content hidden bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                📚 ຕັ້ງຄ່າ / ເພີ່ມວິຊາຮຽນ
+            </h3>
+            <form id="subjectForm" class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-50 p-3.5 sm:p-4 rounded-xl border border-slate-200">
+                <input type="hidden" id="subjectEditId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ລະດັບຊັ້ນ</label>
+                    <select id="subLevel" required class="w-full px-3.5 py-2.5 sm:py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="ປະຖົມ">ປະຖົມ</option>
+                        <option value="ມັດທະຍົມຕອນຕົ້ນ">ມັດທະຍົມຕອນຕົ້ນ</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ເລກລຳດັບ (Order)</label>
+                    <input type="number" id="subOrder" placeholder="Auto-increment" required class="w-full px-3.5 py-2.5 sm:py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ຊື່ວິຊາ</label>
+                    <input type="text" id="subName" placeholder="ເຊັ່ນ: ພາສາອັງກິດ, ຄະນິດສາດ" required class="w-full px-3.5 py-2.5 sm:py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex items-end gap-2">
+                    <button type="submit" id="btnSubSubmit" class="w-full py-2.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition cursor-pointer">
+                        ➕ ເພີ່ມວິຊາ
+                    </button>
+                    <button type="button" id="btnSubCancel" onclick="resetSubjectForm()" class="hidden py-2.5 sm:py-2 px-4 bg-slate-400 hover:bg-slate-500 text-white font-semibold rounded-xl text-sm transition cursor-pointer">
+                        ຍົກເລີກ
+                    </button>
+                </div>
+            </form>
+            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                        <tr>
+                            <th class="p-3 w-20 text-center">ລຳດັບ</th>
+                            <th class="p-3">ລະດັບຊັ້ນ</th>
+                            <th class="p-3">ຊື່ວິຊາຮຽນ</th>
+                            <th class="p-3 text-center w-36 sm:w-40">ຈັດການ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjectList" class="divide-y divide-slate-100">
+                        <tr><td colspan="4" class="p-4 text-center text-slate-400">ກຳລັງໂຫຼດຂໍ້ມູນ...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 7: ຮີເຊັດຂໍ້ມູນ -->
+        <div id="setting-reset" class="setting-content hidden bg-white p-4 sm:p-6 rounded-2xl border border-red-200 shadow-sm space-y-5">
+            <h3 class="font-bold text-red-600 text-sm sm:text-base border-b border-red-100 pb-3 flex items-center gap-2">
+                🧹 ຮີເຊັດ & ລ້າງຂໍ້ມູນລະບົບ
+            </h3>
+            <div class="bg-red-50 p-3.5 sm:p-4 rounded-xl border border-red-100 text-red-700 text-xs leading-relaxed">
+                ⚠️ <b>ຄຳເຕືອນ:</b> ການກົດຮີເຊັດຂໍ້ມູນຈະທຳການລົບຂໍ້ມູນໃນຖານຂໍ້ມູນ Firestore ແບບຖາວອນ ແລະ ບໍ່ສາມາດກູ້ຄືນໄດ້. ກະລຸນາກວດເຊັກໃຫ້ແນ່ໃຈກ່ອນດຳເນີນການ!
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-3 bg-slate-50 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-slate-800 font-bold text-xs sm:text-sm"><span>📝</span> ລ້າງຂໍ້ມູນນັກຮຽນ (ໜ້າລົງທະບຽນ)</div>
+                        <p class="text-xs text-slate-500">ລົບລາຍຊື່, ເບີໂທ, ຫ້ອງຮຽນ ແລະ ປະຫວັດການລົງທະບຽນຂອງນັກຮຽນທຸກຄົນ.</p>
+                    </div>
+                    <button onclick="openResetModal('students', 'ໜ້າລົງທະບຽນ (ນັກຮຽນ)')" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl text-xs transition shadow-md shadow-red-600/20 cursor-pointer">🗑️ ລົບຂໍ້ມູນລົງທະບຽນທັງໝົດ</button>
+                </div>
+                <div class="border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-3 bg-slate-50 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-slate-800 font-bold text-xs sm:text-sm"><span>💳</span> ລ້າງປະຫວັດການເກັບເງິນ (ໜ້າໝາຍເກັບເງິນ)</div>
+                        <p class="text-xs text-slate-500">ລົບປະຫວັດການອອກໃບບິນ, ຂໍ້ມູນການຈ່າຍເງິນຄ່າຮຽນທຸກລາຍການ.</p>
+                    </div>
+                    <button onclick="openResetModal('payments', 'ໜ້າໝາຍເກັບເງິນ (ໃບບິນນັກຮຽນ)')" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl text-xs transition shadow-md shadow-red-600/20 cursor-pointer">🗑️ ລົບປະຫວັດເກັບເງິນທັງໝົດ</button>
+                </div>
+                <div class="border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-3 bg-slate-50 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-slate-800 font-bold text-xs sm:text-sm"><span>📊</span> ລ້າງຂໍ້ມູນຕິດຕາມການເກັບເງິນ</div>
+                        <p class="text-xs text-slate-500">ລົບສະຖານະ ແລະ ຂໍ້ມູນການຕິດຕາມການຊຳລະຄ່າຮຽນ.</p>
+                    </div>
+                    <button onclick="openResetModal('payment_trackings', 'ໜ້າຕິດຕາມການເກັບເງິນ')" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl text-xs transition shadow-md shadow-red-600/20 cursor-pointer">🗑️ ລົບຂໍ້ມູນຕິດຕາມທັງໝົດ</button>
+                </div>
+                <div class="border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-3 bg-slate-50 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-slate-800 font-bold text-xs sm:text-sm"><span>📋</span> ລ້າງປະຫວັດການມາຮຽນ/ຂາດຮຽນ</div>
+                        <p class="text-xs text-slate-500">ລົບຂໍ້ມູນບັນທຶກການມາ, ລາ, ແລະ ຂາດຮຽນຂອງນັກຮຽນທັງໝົດ.</p>
+                    </div>
+                    <button onclick="openResetModal('attendance', 'ໜ້າໝາຍຂາດນັກຮຽນ')" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl text-xs transition shadow-md shadow-red-600/20 cursor-pointer">🗑️ ລົບປະຫວັດການຂາດຮຽນທັງໝົດ</button>
+                </div>
+                <div class="border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-3 bg-slate-50 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-slate-800 font-bold text-xs sm:text-sm"><span>📝</span> ລ້າງຂໍ້ມູນຄະແນນນັກຮຽນ</div>
+                        <p class="text-xs text-slate-500">ລົບຂໍ້ມູນຄະແນນສອບເສັງ ແລະ ຜົນການຮຽນທຸກວິຊາຂອງນັກຮຽນ.</p>
+                    </div>
+                    <button onclick="openResetModal('scores', 'ໜ້າປ້ອນຄະແນນ')" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl text-xs transition shadow-md shadow-red-600/20 cursor-pointer">🗑️ ລົບຂໍ້ມູນຄະແນນທັງໝົດ</button>
+                </div>
+                <div class="border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-3 bg-slate-50 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-slate-800 font-bold text-xs sm:text-sm"><span>👨‍🏫</span> ລ້າງປະຫວັດຈ່າຍເງິນເດືອນຄູ</div>
+                        <p class="text-xs text-slate-500">ລົບປະຫວັດການຈ່າຍເງິນເດືອນ ແລະ ໃບບິນຈ່າຍເງິນຄູທຸກລາຍການ.</p>
+                    </div>
+                    <button onclick="openResetModal('teacher_payments', 'ໜ້າຈ່າຍເງິນເດືອນຄູ')" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl text-xs transition shadow-md shadow-red-600/20 cursor-pointer">🗑️ ລົບປະຫວັດຈ່າຍເງິນຄູທັງໝົດ</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div id="customAlertModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all text-center p-6 space-y-4">
+            <div id="alertIcon" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto text-2xl bg-blue-100 text-blue-600">🔔</div>
+            <div>
+                <h3 id="alertTitle" class="font-bold text-base text-slate-800">ແຈ້ງເຕືອນ</h3>
+                <p id="alertMessage" class="text-xs text-slate-600 mt-1 leading-relaxed"></p>
+            </div>
+            <button type="button" onclick="closeCustomAlert()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs transition cursor-pointer">ຕົກລົງ</button>
+        </div>
+    </div>
+
+    <!-- Reset Modal -->
+    <div id="resetModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all">
+            <div class="p-5 sm:p-6 space-y-4">
+                <div class="flex items-center gap-3 text-red-600">
+                    <div class="p-3 bg-red-100 rounded-xl text-xl">⚠️</div>
+                    <div>
+                        <h3 class="font-bold text-base text-slate-800">ຢືນຢັນການລ້າງຂໍ້ມູນ</h3>
+                        <p id="modalCollectionLabel" class="text-xs text-slate-500 font-medium"></p>
+                    </div>
+                </div>
+                <div class="bg-red-50 p-3 rounded-xl border border-red-100 text-xs text-red-600 leading-relaxed">
+                    ຂໍ້ມູນນີ້ຈະຖືກລົບຖາວອນຈາກ <b>Firestore</b> ແລະ ບໍ່ສາມາດກູ້ຄືນໄດ້!
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">
+                        ກະລຸນາພິມຄຳວ່າ <span class="text-red-600 font-bold select-all">DELETE</span> ເພື່ອຢືນຢັນ:
+                    </label>
+                    <input type="text" id="confirmInputCode" placeholder="ພິມ DELETE ຢູ່ບ່ອນນີ້" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm font-bold uppercase focus:outline-none focus:ring-2 focus:ring-red-500">
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeResetModal()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl text-xs transition cursor-pointer">ຍົກເລີກ</button>
+                    <button type="button" id="btnConfirmDelete" class="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl text-xs transition shadow-md shadow-red-600/20 cursor-pointer">🗑️ ຢືນຢັນການລົບ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Switch Tab -->
+    <script>
+        function switchSettingTab(tabName) {
+            const contents = document.querySelectorAll('.setting-content');
+            contents.forEach(c => c.classList.add('hidden'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(b => {
+                b.classList.remove('active', 'tab-btn-danger');
+                b.classList.add('text-slate-600');
+            });
+
+            const targetContent = document.getElementById(`setting-${tabName}`);
+            if (targetContent) targetContent.classList.remove('hidden');
+
+            const targetBtn = document.getElementById(`tab-btn-${tabName}`);
+            if (targetBtn) {
+                if(tabName === 'reset') {
+                    targetBtn.classList.add('tab-btn-danger', 'active');
+                } else {
+                    targetBtn.classList.add('active');
+                }
+                targetBtn.classList.remove('text-slate-600');
+            }
+        }
+    </script>
+
+    <!-- Script Firebase & Logic -->
+    <script type="module">
+        import { db } from './js/firebase-config.js';
+        import { doc, setDoc, getDoc, collection, addDoc, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        let currentTargetColl = '';
+        let currentTargetLabel = '';
+
+        window.showAlert = (msg, type = 'success', title = 'ແຈ້ງເຕືອນ') => {
+            const modal = document.getElementById('customAlertModal');
+            const iconEl = document.getElementById('alertIcon');
+            document.getElementById('alertTitle').innerText = title;
+            document.getElementById('alertMessage').innerText = msg;
+
+            if (type === 'success') {
+                iconEl.className = 'w-12 h-12 rounded-full flex items-center justify-center mx-auto text-2xl bg-emerald-100 text-emerald-600';
+                iconEl.innerText = '✅';
+            } else if (type === 'error') {
+                iconEl.className = 'w-12 h-12 rounded-full flex items-center justify-center mx-auto text-2xl bg-red-100 text-red-600';
+                iconEl.innerText = '❌';
+            } else {
+                iconEl.className = 'w-12 h-12 rounded-full flex items-center justify-center mx-auto text-2xl bg-blue-100 text-blue-600';
+                iconEl.innerText = 'ℹ️';
+            }
+            modal.classList.remove('hidden');
+        };
+
+        window.closeCustomAlert = () => {
+            document.getElementById('customAlertModal').classList.add('hidden');
+        };
+
+        window.deleteSettingDoc = async (coll, id, type) => {
+            if(confirm('ທ່ານຕ້ອງການລົບຂໍ້ມູນນີ້ ແທ້ບໍ?')) {
+                try {
+                    await deleteDoc(doc(db, coll, id));
+                    showAlert('ລົບຂໍ້ມູນຮຽບຮ້ອຍແລ້ວ!', 'success');
+                    if(type === 'tuition') loadTuition();
+                    if(type === 'age_tuition') loadAgeTuitions();
+                    if(type === 'general_discount') loadGeneralDiscounts();
+                    if(type === 'sibling_discount') loadSiblingDiscounts();
+                    if(type === 'schedule') loadSchedules();
+                    if(type === 'subject') loadSubjects();
+                } catch(err) {
+                    showAlert('ລົບບໍ່ສຳເລັດ: ' + err.message, 'error');
+                }
+            }
+        };
+
+        window.openResetModal = (collName, label) => {
+            currentTargetColl = collName;
+            currentTargetLabel = label;
+            document.getElementById('modalCollectionLabel').innerText = `ລາຍການ: ${label}`;
+            document.getElementById('confirmInputCode').value = '';
+            document.getElementById('resetModal').classList.remove('hidden');
+        };
+
+        window.closeResetModal = () => {
+            document.getElementById('resetModal').classList.add('hidden');
+            currentTargetColl = '';
+            currentTargetLabel = '';
+        };
+
+        document.getElementById('btnConfirmDelete').onclick = async () => {
+            const inputVal = document.getElementById('confirmInputCode').value.trim();
+            if (inputVal !== 'DELETE') {
+                return showAlert('ລະຫັດຢືນຢັນບໍ່ຖືກຕ້ອງ! ກະລຸນາພິມຄຳວ່າ DELETE', 'error');
+            }
+            const collName = currentTargetColl;
+            const label = currentTargetLabel;
+            closeResetModal();
+
+            try {
+                const snap = await getDocs(collection(db, collName));
+                if(snap.empty) {
+                    return showAlert(`ບໍ່ມີຂໍ້ມູນໃນ "${label}" ໃຫ້ລົບ.`, 'info');
+                }
+                let count = 0;
+                for (const d of snap.docs) {
+                    await deleteDoc(doc(db, collName, d.id));
+                    count++;
+                }
+                showAlert(`ລົບຂໍ້ມູນ "${label}" ເປັນຈຳນວນ ${count} ລາຍການ ຮຽບຮ້ອຍແລ້ວ!`, 'success');
+            } catch (err) {
+                showAlert('ເກີດຂໍ້ຜິດພາດ: ' + err.message, 'error');
+            }
+        };
+
+        // 1. Tab 1: ຂໍ້ມູນສູນ
+        async function loadCenterInfo() {
+            try {
+                const docSnap = await getDoc(doc(db, "settings", "school_info"));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if(data.name) document.getElementById('schoolName').value = data.name;
+                    if(data.phone) document.getElementById('schoolPhone').value = data.phone;
+                    if(data.address) document.getElementById('schoolAddress').value = data.address;
+                }
+            } catch(e) { console.error("Error center info:", e); }
+        }
+
+        document.getElementById('centerForm').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                await setDoc(doc(db, "settings", "school_info"), {
+                    name: document.getElementById('schoolName').value.trim(),
+                    phone: document.getElementById('schoolPhone').value.trim(),
+                    address: document.getElementById('schoolAddress').value.trim()
+                });
+                showAlert('ບັນທຶກຂໍ້ມູນສູນສຳເລັດ!', 'success');
+            } catch (err) { showAlert(err.message, 'error'); }
+        };
+
+        // 2. Tab 2: ຄ່າຮຽນ (ແບ່ງເປັນ 2 ສ່ວນ: ຕາມຊັ້ນ ແລະ ຕາມອາຍຸ)
+        const tuitionForm = document.getElementById('tuitionForm');
+        async function loadTuition() {
+            const snap = await getDocs(collection(db, "setting_tuition"));
+            const tbody = document.getElementById('tuitionList');
+            tbody.innerHTML = '';
+            snap.forEach(d => {
+                const data = d.data();
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 font-medium text-slate-800">${data.level || 'ບໍ່ລະບຸຊັ້ນ'}</td>
+                        <td class="p-2.5 text-blue-600 font-bold">${Number(data.price).toLocaleString()} ₭</td>
+                        <td class="p-2.5 text-center space-x-2 whitespace-nowrap">
+                            <button onclick="editTuition('${d.id}', '${data.level || ''}', ${data.price})" class="text-blue-600 hover:text-blue-800 text-[11px] font-semibold cursor-pointer">✏️</button>
+                            <button onclick="deleteSettingDoc('setting_tuition', '${d.id}', 'tuition')" class="text-red-500 hover:text-red-700 text-[11px] font-semibold cursor-pointer">🗑️</button>
+                        </td>
+                    </tr>`;
+            });
+            if(snap.empty) tbody.innerHTML = '<tr><td colspan="3" class="p-3 text-center text-slate-400">ບໍ່ມີຂໍ້ມູນຄ່າຮຽນ</td></tr>';
+        }
+
+        window.editTuition = (id, level, price) => {
+            document.getElementById('tuitionEditId').value = id;
+            document.getElementById('courseLevel').value = level;
+            document.getElementById('coursePrice').value = price;
+            document.getElementById('btnTuitionSubmit').innerText = '💾 ອັບເດດຄ່າຮຽນ';
+            document.getElementById('btnTuitionCancel').classList.remove('hidden');
+        };
+
+        window.resetTuitionForm = () => {
+            tuitionForm.reset();
+            document.getElementById('tuitionEditId').value = '';
+            document.getElementById('btnTuitionSubmit').innerText = '➕ ເພີ່ມຄ່າຮຽນຕາມຊັ້ນ';
+            document.getElementById('btnTuitionCancel').classList.add('hidden');
+        };
+
+        tuitionForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('tuitionEditId').value;
+            const levelVal = document.getElementById('courseLevel').value;
+            const priceVal = Number(document.getElementById('coursePrice').value);
+
+            try {
+                if(editId) {
+                    await updateDoc(doc(db, "setting_tuition", editId), { level: levelVal, price: priceVal });
+                    showAlert('ອັບເດດຄ່າຮຽນສຳເລັດ!', 'success');
+                } else {
+                    await addDoc(collection(db, "setting_tuition"), { level: levelVal, price: priceVal });
+                    showAlert('ເພີ່ມຄ່າຮຽນສຳເລັດ!', 'success');
+                }
+                resetTuitionForm();
+                loadTuition();
+            } catch(err) {
+                showAlert(err.message, 'error');
+            }
+        };
+
+        // ຄ່າຮຽນຕາມອາຍຸ (ອະນຸບານ 1 / ລ້ຽງເດັກ)
+        const ageTuitionForm = document.getElementById('ageTuitionForm');
+        async function loadAgeTuitions() {
+            const snap = await getDocs(collection(db, "setting_age_tuitions"));
+            const tbody = document.getElementById('ageTuitionList');
+            tbody.innerHTML = '';
+            snap.forEach(d => {
+                const data = d.data();
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 font-medium text-slate-800">${data.category}</td>
+                        <td class="p-2.5 text-slate-600">${data.ageMin} - ${data.ageMax}</td>
+                        <td class="p-2.5 text-emerald-600 font-bold">${Number(data.price).toLocaleString()} ₭</td>
+                        <td class="p-2.5 text-center space-x-2 whitespace-nowrap">
+                            <button onclick="editAgeTuition('${d.id}', '${data.category}', '${encodeURIComponent(data.ageMin)}', '${encodeURIComponent(data.ageMax)}', ${data.price})" class="text-blue-600 hover:text-blue-800 text-[11px] font-semibold cursor-pointer">✏️</button>
+                            <button onclick="deleteSettingDoc('setting_age_tuitions', '${d.id}', 'age_tuition')" class="text-red-500 hover:text-red-700 text-[11px] font-semibold cursor-pointer">🗑️</button>
+                        </td>
+                    </tr>`;
+            });
+            if(snap.empty) tbody.innerHTML = '<tr><td colspan="4" class="p-3 text-center text-slate-400">ບໍ່ມີຂໍ້ມູນລາຄາຕາມອາຍຸ</td></tr>';
+        }
+
+        window.editAgeTuition = (id, category, encMin, encMax, price) => {
+            document.getElementById('ageTuitionEditId').value = id;
+            document.getElementById('ageGroupCategory').value = category;
+            document.getElementById('ageMin').value = decodeURIComponent(encMin);
+            document.getElementById('ageMax').value = decodeURIComponent(encMax);
+            document.getElementById('agePrice').value = price;
+            document.getElementById('btnAgeTuitionSubmit').innerText = '💾 ອັບເດດລາຄາຕາມອາຍຸ';
+            document.getElementById('btnAgeTuitionCancel').classList.remove('hidden');
+        };
+
+        window.resetAgeTuitionForm = () => {
+            ageTuitionForm.reset();
+            document.getElementById('ageTuitionEditId').value = '';
+            document.getElementById('btnAgeTuitionSubmit').innerText = '➕ ເພີ່ມລາຄາຕາມອາຍຸ';
+            document.getElementById('btnAgeTuitionCancel').classList.add('hidden');
+        };
+
+        ageTuitionForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('ageTuitionEditId').value;
+            const categoryVal = document.getElementById('ageGroupCategory').value;
+            const ageMinVal = document.getElementById('ageMin').value.trim();
+            const ageMaxVal = document.getElementById('ageMax').value.trim();
+            const priceVal = Number(document.getElementById('agePrice').value);
+
+            try {
+                if(editId) {
+                    await updateDoc(doc(db, "setting_age_tuitions", editId), { 
+                        category: categoryVal, 
+                        ageMin: ageMinVal, 
+                        ageMax: ageMaxVal, 
+                        price: priceVal 
+                    });
+                    showAlert('ອັບເດດລາຄາຕາມອາຍຸສຳເລັດ!', 'success');
+                } else {
+                    await addDoc(collection(db, "setting_age_tuitions"), { 
+                        category: categoryVal, 
+                        ageMin: ageMinVal, 
+                        ageMax: ageMaxVal, 
+                        price: priceVal 
+                    });
+                    showAlert('ເພີ່ມລາຄາຕາມອາຍຸສຳເລັດ!', 'success');
+                }
+                resetAgeTuitionForm();
+                loadAgeTuitions();
+            } catch(err) {
+                showAlert(err.message, 'error');
+            }
+        };
+
+        // 3. Tab 3: ສ່ວນຫຼຸດ
+        const generalDiscountForm = document.getElementById('generalDiscountForm');
+        async function loadGeneralDiscounts() {
+            const snap = await getDocs(collection(db, "setting_general_discounts"));
+            const tbody = document.getElementById('generalDiscountList');
+            tbody.innerHTML = '';
+            snap.forEach(d => {
+                const data = d.data();
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 text-blue-600 font-bold">${Number(data.amount).toLocaleString()} ₭</td>
+                        <td class="p-2.5 text-center space-x-2 whitespace-nowrap">
+                            <button onclick="editGenDiscount('${d.id}', ${data.amount})" class="text-blue-600 hover:text-blue-800 text-[11px] font-semibold cursor-pointer">✏️</button>
+                            <button onclick="deleteSettingDoc('setting_general_discounts', '${d.id}', 'general_discount')" class="text-red-500 hover:text-red-700 text-[11px] font-semibold cursor-pointer">🗑️</button>
+                        </td>
+                    </tr>`;
+            });
+            if(snap.empty) tbody.innerHTML = '<tr><td colspan="2" class="p-3 text-center text-slate-400">ບໍ່ມີຂໍ້ມູນ</td></tr>';
+        }
+
+        window.editGenDiscount = (id, amount) => {
+            document.getElementById('genDiscountEditId').value = id;
+            document.getElementById('genDiscountAmount').value = amount;
+            document.getElementById('btnGenDiscountSubmit').innerText = '💾 ອັບເດດ';
+            document.getElementById('btnGenDiscountCancel').classList.remove('hidden');
+        };
+
+        window.resetGenDiscountForm = () => {
+            generalDiscountForm.reset();
+            document.getElementById('genDiscountEditId').value = '';
+            document.getElementById('btnGenDiscountSubmit').innerText = '➕ ເພີ່ມສ່ວນຫຼຸດທົ່ວໄປ';
+            document.getElementById('btnGenDiscountCancel').classList.add('hidden');
+        };
+
+        generalDiscountForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('genDiscountEditId').value;
+            const amountVal = Number(document.getElementById('genDiscountAmount').value);
+            try {
+                if(editId) {
+                    await updateDoc(doc(db, "setting_general_discounts", editId), { amount: amountVal });
+                    showAlert('ອັບເດດສ່ວນຫຼຸດທົ່ວໄປສຳເລັດ!', 'success');
+                } else {
+                    await addDoc(collection(db, "setting_general_discounts"), { amount: amountVal });
+                    showAlert('ເພີ່ມສ່ວນຫຼຸດທົ່ວໄປສຳເລັດ!', 'success');
+                }
+                resetGenDiscountForm();
+                loadGeneralDiscounts();
+            } catch(err) { showAlert(err.message, 'error'); }
+        };
+
+        const siblingDiscountForm = document.getElementById('siblingDiscountForm');
+        async function loadSiblingDiscounts() {
+            const snap = await getDocs(collection(db, "setting_sibling_discounts"));
+            const tbody = document.getElementById('siblingDiscountList');
+            tbody.innerHTML = '';
+            snap.forEach(d => {
+                const data = d.data();
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 text-emerald-600 font-bold">${Number(data.amount).toLocaleString()} ₭</td>
+                        <td class="p-2.5 text-center space-x-2 whitespace-nowrap">
+                            <button onclick="editSibDiscount('${d.id}', ${data.amount})" class="text-blue-600 hover:text-blue-800 text-[11px] font-semibold cursor-pointer">✏️</button>
+                            <button onclick="deleteSettingDoc('setting_sibling_discounts', '${d.id}', 'sibling_discount')" class="text-red-500 hover:text-red-700 text-[11px] font-semibold cursor-pointer">🗑️</button>
+                        </td>
+                    </tr>`;
+            });
+            if(snap.empty) tbody.innerHTML = '<tr><td colspan="2" class="p-3 text-center text-slate-400">ບໍ່ມີຂໍ້ມູນ</td></tr>';
+        }
+
+        window.editSibDiscount = (id, amount) => {
+            document.getElementById('sibDiscountEditId').value = id;
+            document.getElementById('sibDiscountAmount').value = amount;
+            document.getElementById('btnSibDiscountSubmit').innerText = '💾 ອັບເດດ';
+            document.getElementById('btnSibDiscountCancel').classList.remove('hidden');
+        };
+
+        window.resetSibDiscountForm = () => {
+            siblingDiscountForm.reset();
+            document.getElementById('sibDiscountEditId').value = '';
+            document.getElementById('btnSibDiscountSubmit').innerText = '➕ ເພີ່ມສ່ວນຫຼຸດອ້າຍນ້ອງ';
+            document.getElementById('btnSibDiscountCancel').classList.add('hidden');
+        };
+
+        siblingDiscountForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('sibDiscountEditId').value;
+            const amountVal = Number(document.getElementById('siblingDiscountAmount').value);
+            try {
+                if(editId) {
+                    await updateDoc(doc(db, "setting_sibling_discounts", editId), { amount: amountVal });
+                    showAlert('ອັບເດດສ່ວນຫຼຸດອ້າຍນ້ອງສຳເລັດ!', 'success');
+                } else {
+                    await addDoc(collection(db, "setting_sibling_discounts"), { amount: amountVal });
+                    showAlert('ເພີ່ມສ່ວນຫຼຸດອ້າຍນ້ອງສຳເລັດ!', 'success');
+                }
+                resetSibDiscountForm();
+                loadSiblingDiscounts();
+            } catch(err) { showAlert(err.message, 'error'); }
+        };
+
+        // 4. Tab 4: ລະຫັດນັກຮຽນ
+        async function loadPrefixConfig() {
+            try {
+                const docSnap = await getDoc(doc(db, "settings", "student_id_config"));
+                if (docSnap.exists() && docSnap.data().prefix) {
+                    const prefix = docSnap.data().prefix;
+                    document.getElementById('idPrefix').value = prefix;
+                    document.getElementById('previewCode').innerText = `${prefix}-001`;
+                } else {
+                    document.getElementById('idPrefix').value = "STD";
+                }
+            } catch (err) { console.error("Error loading prefix:", err); }
+        }
+
+        document.getElementById('idPrefix').addEventListener('input', (e) => {
+            const val = e.target.value.trim().toUpperCase() || "STD";
+            document.getElementById('previewCode').innerText = `${val}-001`;
+        });
+
+        document.getElementById('studentIdForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const prefixVal = document.getElementById('idPrefix').value.trim().toUpperCase();
+            try {
+                await setDoc(doc(db, "settings", "student_id_config"), { prefix: prefixVal });
+                showAlert('ບັນທຶກ Prefix ສຳເລັດ!', 'success');
+            } catch (err) { showAlert(err.message, 'error'); }
+        };
+
+        // 5. Tab 5: ຫ້ອງຮຽນ
+        const scheduleForm = document.getElementById('scheduleForm');
+        async function loadScheduleTeacherCheckboxes(selectedTeachers = []) {
+            const container = document.getElementById('teacherCheckboxesContainer');
+            try {
+                const usersSnap = await getDocs(collection(db, "users"));
+                const allTeachers = [];
+                usersSnap.forEach(d => {
+                    const data = d.data();
+                    if ((data.role || "").trim() === "teacher") {
+                        allTeachers.push(data.name);
+                    }
+                });
+                const schedSnap = await getDocs(collection(db, "setting_schedules"));
+                const currentEditId = document.getElementById('scheduleEditId').value;
+                const assignedTeachers = new Set();
+                schedSnap.forEach(d => {
+                    if (d.id !== currentEditId) {
+                        const data = d.data();
+                        const tList = data.teachers || (data.teacher ? [data.teacher] : []);
+                        tList.forEach(t => assignedTeachers.add(t));
+                    }
+                });
+                const availableTeachers = allTeachers.filter(t => !assignedTeachers.has(t) || selectedTeachers.includes(t));
+                if(availableTeachers.length === 0) {
+                    container.innerHTML = '<span class="text-xs text-red-500">ຄູທຸກຄົນຖືກເລືອກປະຈຳຫ້ອງອື່ນໝົດແລ້ວ!</span>';
+                    return;
+                }
+                container.innerHTML = '';
+                availableTeachers.forEach(teacherName => {
+                    const isChecked = selectedTeachers.includes(teacherName) ? 'checked' : '';
+                    container.innerHTML += `
+                        <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
+                            <input type="checkbox" name="scheduleTeachers" value="${teacherName}" ${isChecked} class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span>${teacherName}</span>
+                        </label>`;
+                });
+            } catch(err) {
+                container.innerHTML = '<span class="text-xs text-red-500">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດລາຍຊື່ຄູ</span>';
+            }
+        }
+
+        async function loadSchedules() {
+            const snap = await getDocs(collection(db, "setting_schedules"));
+            const tbody = document.getElementById('scheduleList');
+            tbody.innerHTML = '';
+            snap.forEach(d => {
+                const data = d.data();
+                const teachersStr = Array.isArray(data.teachers) ? data.teachers.join(', ') : (data.teacher || '-');
+                const levelBadge = data.level === 'ອະນຸບານ' 
+                    ? '<span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-lg text-xs font-semibold">ອະນຸບານ</span>'
+                    : (data.level === 'ມັດທະຍົມຕອນຕົ້ນ' 
+                        ? '<span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold">ມ.ຕອນຕົ້ນ</span>'
+                        : '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-semibold">ປະຖົມ</span>');
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3">${levelBadge}</td>
+                        <td class="p-3 font-medium text-slate-800">${data.title}</td>
+                        <td class="p-3 text-slate-600 text-xs">${teachersStr}</td>
+                        <td class="p-3 text-center space-x-2 whitespace-nowrap">
+                            <button onclick="editSchedule('${d.id}', '${data.level || 'ປະຖົມ'}', '${encodeURIComponent(data.title)}', '${encodeURIComponent(JSON.stringify(data.teachers || [data.teacher]))}')" class="text-blue-600 hover:text-blue-800 text-xs font-semibold cursor-pointer">✏️ ແກ້ໄຂ</button>
+                            <button onclick="deleteSettingDoc('setting_schedules', '${d.id}', 'schedule')" class="text-red-500 hover:text-red-700 text-xs font-semibold cursor-pointer">🗑️ ລົບ</button>
+                        </td>
+                    </tr>`;
+            });
+            if(snap.empty) tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400">ບໍ່ມີຂໍ້ມູນຫ້ອງຮຽນ</td></tr>';
+        }
+
+        window.editSchedule = (id, level, encodedTitle, encodedTeachers) => {
+            const title = decodeURIComponent(encodedTitle);
+            const teachers = JSON.parse(decodeURIComponent(encodedTeachers));
+            document.getElementById('scheduleEditId').value = id;
+            document.getElementById('schedLevel').value = level;
+            document.getElementById('schedTitle').value = title;
+            document.getElementById('btnSchedSubmit').innerText = '💾 ອັບເດດຫ້ອງຮຽນ';
+            document.getElementById('btnSchedCancel').classList.remove('hidden');
+            loadScheduleTeacherCheckboxes(teachers);
+        };
+
+        window.resetScheduleForm = () => {
+            scheduleForm.reset();
+            document.getElementById('scheduleEditId').value = '';
+            document.getElementById('btnSchedSubmit').innerText = '➕ ເພີ່ມຫ້ອງຮຽນ';
+            document.getElementById('btnSchedCancel').classList.add('hidden');
+            loadScheduleTeacherCheckboxes();
+        };
+
+        scheduleForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('scheduleEditId').value;
+            const levelVal = document.getElementById('schedLevel').value;
+            const titleVal = document.getElementById('schedTitle').value.trim();
+            const selectedTeachers = [];
+            document.querySelectorAll('input[name="scheduleTeachers"]:checked').forEach(cb => {
+                selectedTeachers.push(cb.value);
+            });
+            try {
+                if(editId) {
+                    await updateDoc(doc(db, "setting_schedules", editId), { level: levelVal, title: titleVal, teachers: selectedTeachers });
+                    showAlert('ອັບເດດຫ້ອງຮຽນສຳເລັດ!', 'success');
+                } else {
+                    await addDoc(collection(db, "setting_schedules"), { level: levelVal, title: titleVal, teachers: selectedTeachers });
+                    showAlert('ເພີ່ມຫ້ອງຮຽນສຳເລັດ!', 'success');
+                }
+                resetScheduleForm();
+                loadSchedules();
+                loadScheduleTeacherCheckboxes();
+            } catch(err) { showAlert(err.message, 'error'); }
+        };
+
+        // 6. Tab 6: ວິຊາຮຽນ
+        const subjectForm = document.getElementById('subjectForm');
+        async function loadSubjects() {
+            const snap = await getDocs(collection(db, "setting_subjects"));
+            const tbody = document.getElementById('subjectList');
+            tbody.innerHTML = '';
+            let subjects = [];
+            let maxOrder = 0;
+            snap.forEach(d => {
+                const data = d.data();
+                subjects.push({ id: d.id, ...data });
+                const ord = Number(data.order) || 0;
+                if (ord > maxOrder) maxOrder = ord;
+            });
+            if (!document.getElementById('subjectEditId').value) {
+                document.getElementById('subOrder').value = maxOrder + 1;
+            }
+            subjects.sort((a, b) => (Number(a.order) || 99) - (Number(b.order) || 99));
+            subjects.forEach(data => {
+                const levelBadge = data.level === 'ມັດທະຍົມຕອນຕົ້ນ' 
+                    ? '<span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold">ມ.ຕອນຕົ້ນ</span>'
+                    : '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-semibold">ປະຖົມ</span>';
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 text-center font-bold text-slate-700">${data.order || '-'}</td>
+                        <td class="p-3">${levelBadge}</td>
+                        <td class="p-3 font-medium text-slate-800">${data.name}</td>
+                        <td class="p-3 text-center space-x-2 whitespace-nowrap">
+                            <button onclick="editSubject('${data.id}', '${data.level}', '${data.order || 1}', '${encodeURIComponent(data.name)}')" class="text-blue-600 hover:text-blue-800 text-xs font-semibold cursor-pointer">✏️ ແກ້ໄຂ</button>
+                            <button onclick="deleteSettingDoc('setting_subjects', '${data.id}', 'subject')" class="text-red-500 hover:text-red-700 text-xs font-semibold cursor-pointer">🗑️ ລົບ</button>
+                        </td>
+                    </tr>`;
+            });
+            if(subjects.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400">ບໍ່ມີຂໍ້ມູນວິຊາຮຽນ</td></tr>';
+                document.getElementById('subOrder').value = 1;
+            }
+        }
+
+        window.editSubject = (id, level, order, encodedName) => {
+            const name = decodeURIComponent(encodedName);
+            document.getElementById('subjectEditId').value = id;
+            document.getElementById('subLevel').value = level;
+            document.getElementById('subOrder').value = order;
+            document.getElementById('subName').value = name;
+            document.getElementById('btnSubSubmit').innerText = '💾 ອັບເດດວິຊາ';
+            document.getElementById('btnSubCancel').classList.remove('hidden');
+        };
+
+        window.resetSubjectForm = async () => {
+            subjectForm.reset();
+            document.getElementById('subjectEditId').value = '';
+            document.getElementById('btnSubSubmit').innerText = '➕ ເພີ່ມວິຊາ';
+            document.getElementById('btnSubCancel').classList.add('hidden');
+            const snap = await getDocs(collection(db, "setting_subjects"));
+            let maxOrder = 0;
+            snap.forEach(d => {
+                const ord = Number(d.data().order) || 0;
+                if (ord > maxOrder) maxOrder = ord;
+            });
+            document.getElementById('subOrder').value = maxOrder + 1;
+        };
+
+        subjectForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('subjectEditId').value;
+            const levelVal = document.getElementById('subLevel').value;
+            const orderVal = Number(document.getElementById('subOrder').value) || 1;
+            const nameVal = document.getElementById('subName').value.trim();
+            try {
+                if(editId) {
+                    await updateDoc(doc(db, "setting_subjects", editId), { level: levelVal, order: orderVal, name: nameVal });
+                    showAlert('ອັບເດດວິຊາຮຽນສຳເລັດ!', 'success');
+                } else {
+                    await addDoc(collection(db, "setting_subjects"), { level: levelVal, order: orderVal, name: nameVal });
+                    showAlert('ເພີ່ມວິຊາຮຽນສຳເລັດ!', 'success');
+                }
+                resetSubjectForm();
+                loadSubjects();
+            } catch(err) { showAlert(err.message, 'error'); }
+        };
+
+        // Initial Load
+        loadCenterInfo();
+        loadTuition();
+        loadAgeTuitions();
+        loadGeneralDiscounts();
+        loadSiblingDiscounts();
+        loadPrefixConfig();
+        loadScheduleTeacherCheckboxes();
+        loadSchedules();
+        loadSubjects();
+    </script>
+</body>
+</html>

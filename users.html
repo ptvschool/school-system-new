@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ຈັດການຜູ້ໃຊ້ - Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Noto Sans Lao', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="p-6 max-w-5xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 rounded-2xl border border-slate-200 shadow-sm gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">👥 ຈັດການຜູ້ໃຊ້ & ກຳນົດສິດ</h1>
+                <p id="userInfo" class="text-xs text-slate-500 mt-1">ກຳລັງໂຫຼດຂໍ້ມູນ...</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <!-- 🔘 ປຸ່ມເພີ່ມຜູ້ໃຊ້ (ເປີດ Modal) -->
+                <button onclick="openAddModal()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow-lg shadow-emerald-600/20 transition flex items-center gap-2 cursor-pointer">
+                    <span>➕</span> ເພີ່ມຜູ້ໃຊ້
+                </button>
+               
+            </div>
+        </div>
+
+        <!-- 📋 ຕາຕະລາງ Users -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h3 class="font-bold text-sm text-slate-700">ລາຍຊື່ຜູ້ໃຊ້ທັງໝົດ</h3>
+                <span id="userCount" class="text-xs bg-slate-200 text-slate-700 px-2.5 py-1 rounded-lg font-semibold">0 ທ່ານ</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 border-b border-slate-200 p-3 font-semibold text-slate-600">
+                        <tr>
+                            <th class="p-3.5">ຊື່ຜູ້ໃຊ້</th>
+                            <th class="p-3.5">ເບີໂທ ( Username )</th>
+                            <th class="p-3.5">ຊື່ຢູສເຊີ</th>
+                            <th class="p-3.5">ສິດ (Role)</th>
+                            <th class="p-3.5">ເງິນເດືອນພື້ນຖານ</th>
+                            <th class="p-3.5 text-center">ຈັດການ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userList" class="divide-y divide-slate-100">
+                        <tr>
+                            <td colspan="6" class="text-center p-6 text-slate-400">ກຳລັງໂຫຼດຂໍ້ມູນ...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         📌 MODAL (Pop-up ຟອມເພີ່ມຜູ້ໃຊ້ໃໝ່)
+    ==================================================== -->
+    <div id="userModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-55">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all">
+            
+            <div class="p-5 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <span>👤</span> ເພີ່ມຜູ້ໃຊ້ໃໝ່
+                </h3>
+                <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold cursor-pointer">&times;</button>
+            </div>
+
+            <form id="addUserForm" class="p-5 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ຊື່ ແລະ ນາມສະກຸນ <span class="text-red-500">*</span></label>
+                    <input type="text" id="newName" placeholder="ປ້ອນຊື່ ແລະ ນາມສະກຸນ" required class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ເບີໂທລະສັບ (ໃຊ້ເປັນ Username ລັອກອິນ) <span class="text-red-500">*</span></label>
+                    <input type="tel" id="newPhone" placeholder="020 XXXXXXXX" required class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ຊື່ຢູສເຊີ</label>
+                    <input type="text" id="newEmail" placeholder="ປ້ອນຊື່ຢູສເຊີ (ບໍ່ຈຳເປັນຕ້ອງມີ @)" class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ລະຫັດຜ່ານ (Password) <span class="text-red-500">*</span></label>
+                    <input type="password" id="newPass" placeholder="••••••••" required class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ກຳນົດສິດ (Role) <span class="text-red-500">*</span></label>
+                    <select id="newRole" onchange="toggleSalaryField('new')" class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="teacher">👩‍🏫 Teacher (ຄູສອນ)</option>
+                        <option value="admin">👑 Admin (ຜູ້ດູແລ)</option>
+                    </select>
+                </div>
+
+                <div id="newSalaryContainer">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ເງິນເດືອນພື້ນຖານ (ກີບ)</label>
+                    <input type="number" id="newSalary" placeholder="ເຊັ່ນ: 2000000" class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeAddModal()" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl text-sm transition cursor-pointer">
+                        ຍົກເລີກ
+                    </button>
+                    <button type="submit" id="btnSave" class="w-1/2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/20 cursor-pointer">
+                        💾 ບັນທຶກ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         📌 EDIT MODAL (Pop-up ຟອມແກ້ໄຂຜູ້ໃຊ້)
+    ==================================================== -->
+    <div id="editModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-55">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all">
+            
+            <div class="p-5 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <span>✏️</span> ແກ້ໄຂຂໍ້ມູນຜູ້ໃຊ້
+                </h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold cursor-pointer">&times;</button>
+            </div>
+
+            <form id="editUserForm" class="p-5 space-y-4">
+                <input type="hidden" id="editId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ຊື່ ແລະ ນາມສະກຸນ <span class="text-red-500">*</span></label>
+                    <input type="text" id="editName" placeholder="ປ້ອນຊື່ ແລະ ນາມສະກຸນ" required class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ເບີໂທລະສັບ (Username) <span class="text-red-500">*</span></label>
+                    <input type="tel" id="editPhone" placeholder="020 XXXXXXXX" required class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ຊື່ຢູສເຊີ</label>
+                    <input type="text" id="editEmail" placeholder="ປ້ອນຊື່ຢູສເຊີ (ບໍ່ຈຳເປັນຕ້ອງມີ @)" class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ລະຫັດຜ່ານໃໝ່ (ປະວ່າງໄວ້ຖ້າບໍ່ປ່ຽນ)</label>
+                    <input type="text" id="editPass" placeholder="ປ້ອນລະຫັດຜ່ານໃໝ່ (ຖ້າຕ້ອງການປ່ຽນ)" class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ກຳນົດສິດ (Role) <span class="text-red-500">*</span></label>
+                    <select id="editRole" onchange="toggleSalaryField('edit')" class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="teacher">👩‍🏫 Teacher (ຄູສອນ)</option>
+                        <option value="admin">👑 Admin (ຜູ້ດູແລ)</option>
+                    </select>
+                </div>
+
+                <div id="editSalaryContainer">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ເງິນເດືອນພື້ນຖານ (ກີບ)</label>
+                    <input type="number" id="editSalary" placeholder="ເຊັ່ນ: 2000000" class="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeEditModal()" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl text-sm transition cursor-pointer">
+                        ຍົກເລີກ
+                    </button>
+                    <button type="submit" id="btnUpdate" class="w-1/2 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
+                        💾 ບັນທຶກການແກ້ໄຂ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         📌 CUSTOM POPUP NOTIFICATION & CONFIRM MODAL (ແທນ alert/confirm)
+    ==================================================== -->
+    <div id="popupModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-60">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl border border-slate-100 overflow-hidden text-center p-6 space-y-4 transform transition-all">
+            <div id="popupIcon" class="text-4xl">✅</div>
+            <h3 id="popupTitle" class="font-bold text-slate-800 text-lg">ແຈ້ງເຕືອນ</h3>
+            <p id="popupMessage" class="text-sm text-slate-600">ຂໍ້ຄວາມ...</p>
+            
+            <div id="popupButtons" class="flex gap-2 pt-2">
+                <!-- ສໍາລັບ Alert ທຳມະດາ -->
+                <button id="popupOkBtn" onclick="closePopup()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition cursor-pointer">
+                    ຕົກລົງ
+                </button>
+                <!-- ສໍາລັບ Confirm (ເຊື່ອງໄວ້ກ່ອນ) -->
+                <button id="popupCancelBtn" onclick="closePopup()" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl text-sm transition hidden cursor-pointer">
+                    ຍົກເລີກ
+                </button>
+                <button id="popupConfirmBtn" class="w-1/2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition hidden cursor-pointer">
+                    ຢືນຢັນ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Zone -->
+    <script>
+        // ຟັງຊັນປິດ/ເປີດ ຟິວເງິນເດືອນຕາມສິດ (Role)
+        function toggleSalaryField(mode) {
+            const roleEl = document.getElementById(mode === 'new' ? 'newRole' : 'editRole');
+            const containerEl = document.getElementById(mode === 'new' ? 'newSalaryContainer' : 'editSalaryContainer');
+            if (roleEl.value === 'teacher') {
+                containerEl.style.display = 'block';
+            } else {
+                containerEl.style.display = 'none';
+            }
+        }
+
+        // ຟັງຊັນຄວບຄຸມ Modal ເພີ່ມ
+        function openAddModal() {
+            document.getElementById('userModal').classList.remove('hidden');
+            toggleSalaryField('new');
+        }
+        function closeAddModal() {
+            document.getElementById('userModal').classList.add('hidden');
+            document.getElementById('addUserForm').reset();
+        }
+
+        // ຟັງຊັນຄວບຄຸມ Modal ແກ້ໄຂ
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            document.getElementById('editUserForm').reset();
+        }
+
+        // ຟັງຊັນສະແດງ Popup Alert ແທນ alert() ປົກກະຕິ
+        function showPopup(message, title = "ແຈ້ງເຕືອນ", icon = "✅", callback = null) {
+            document.getElementById('popupTitle').innerText = title;
+            document.getElementById('popupMessage').innerText = message;
+            document.getElementById('popupIcon').innerText = icon;
+            
+            document.getElementById('popupOkBtn').classList.remove('hidden');
+            document.getElementById('popupCancelBtn').classList.add('hidden');
+            document.getElementById('popupConfirmBtn').classList.add('hidden');
+            
+            window.popupCallback = callback;
+            document.getElementById('popupModal').classList.remove('hidden');
+        }
+
+        function closePopup() {
+            document.getElementById('popupModal').classList.add('hidden');
+            if (typeof window.popupCallback === 'function') {
+                window.popupCallback();
+                window.popupCallback = null;
+            }
+        }
+
+        // ຟັງຊັນສະແດງ Popup Confirm ແທນ confirm() ປົກກະຕິ
+        function showConfirm(message, title = "ຢືນຢັນການທຳງານ", icon = "⚠️", onConfirm) {
+            document.getElementById('popupTitle').innerText = title;
+            document.getElementById('popupMessage').innerText = message;
+            document.getElementById('popupIcon').innerText = icon;
+            
+            document.getElementById('popupOkBtn').classList.add('hidden');
+            document.getElementById('popupCancelBtn').classList.remove('hidden');
+            document.getElementById('popupConfirmBtn').classList.remove('hidden');
+
+            const confirmBtn = document.getElementById('popupConfirmBtn');
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+            newConfirmBtn.onclick = () => {
+                document.getElementById('popupModal').classList.add('hidden');
+                if (onConfirm) onConfirm();
+            };
+
+            document.getElementById('popupModal').classList.add('hidden');
+        }
+    </script>
+
+    <!-- Script Zone (Firebase) -->
+    <script type="module">
+        import { protectPage } from './js/auth-guard.js';
+        import { db } from './js/firebase-config.js';
+        import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 🔒 ດັກສິດ: ເຂົ້າໄດ້ສະເພາະ 'admin' ເທົ່ານັ້ນ!
+        const currentUser = protectPage(['admin']);
+        if (currentUser) {
+            document.getElementById('userInfo').innerText = `ເຂົ້າໃຊ້ໂດຍ: ${currentUser.name} (${currentUser.role})`;
+        }
+
+        // ໂຫຼດລາຍຊື່ Users
+        async function loadUsers() {
+            const tbody = document.getElementById('userList');
+            try {
+                const snap = await getDocs(collection(db, "users"));
+                tbody.innerHTML = '';
+                document.getElementById('userCount').innerText = `${snap.size} ທ່ານ`;
+
+                if (snap.empty) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-400">ບໍ່ມີຂໍ້ມູນຜູ້ໃຊ້</td></tr>`;
+                    return;
+                }
+
+                snap.forEach(documentSnap => {
+                    const u = documentSnap.data();
+                    const userId = documentSnap.id;
+
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-slate-50/80 transition";
+                    row.innerHTML = `
+                        <td class="p-3.5 font-semibold text-slate-800">${u.name}</td>
+                        <td class="p-3.5 text-blue-600 font-mono font-semibold">${u.phone || '-'}</td>
+                        <td class="p-3.5 text-slate-600">${u.email || '-'}</td>
+                        <td class="p-3.5">
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold ${u.role === 'admin' ? 'bg-purple-100 text-purple-700 border border-purple-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}">
+                                ${u.role === 'admin' ? '👑 Admin' : '👩‍🏫 Teacher'}
+                            </span>
+                        </td>
+                        <td class="p-3.5 font-bold text-emerald-600">
+                            ${u.role === 'teacher' ? (Number(u.salary || 0).toLocaleString() + ' ₭') : '<span class="text-slate-400 font-normal">-</span>'}
+                        </td>
+                        <td class="p-3.5 space-x-1">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <!-- 🔘 ປຸ່ມເປີດ Modal ແກ້ໄຂ -->
+                                <button onclick="openEditModal('${userId}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg text-xs font-semibold border border-amber-200 transition cursor-pointer">
+                                    ✏️ ແກ້ໄຂ
+                                </button>
+
+                                <!-- 🗑️ ປຸ່ມລົບ -->
+                                <button onclick="confirmDeleteUser('${userId}', '${u.name}')" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-semibold border border-red-200 transition cursor-pointer">
+                                    🗑️ ລົບ
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (err) {
+                console.error("Error loading users: ", err);
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-red-500">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ</td></tr>`;
+            }
+        }
+
+        // ຟັງຊັນເປີດ Modal ແກ້ໄຂ ແລະ ດຶງຂໍ້ມູນເກົ່າໃສ່ Form
+        window.openEditModal = async (userId) => {
+            try {
+                const docRef = doc(db, "users", userId);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const u = docSnap.data();
+                    document.getElementById('editId').value = userId;
+                    document.getElementById('editName').value = u.name || '';
+                    document.getElementById('editPhone').value = u.phone || '';
+                    document.getElementById('editEmail').value = u.email || '';
+                    document.getElementById('editPass').value = ''; 
+                    document.getElementById('editRole').value = u.role || 'teacher';
+                    document.getElementById('editSalary').value = u.salary || '';
+
+                    toggleSalaryField('edit');
+                    document.getElementById('editModal').classList.remove('hidden');
+                } else {
+                    showPopup("ບໍ່ພົບຂໍ້ມູນຜູ້ໃຊ້ນີ້", "ຜິດພາດ", "❌");
+                }
+            } catch (err) {
+                showPopup("ເກີດຂໍ້ຜິດພາດ: " + err.message, "ຜິດພາດ", "❌");
+            }
+        };
+
+        // ບັນທຶກການແກ້ໄຂ User
+        document.getElementById('editUserForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btnUpdate = document.getElementById('btnUpdate');
+            btnUpdate.disabled = true;
+            btnUpdate.innerText = 'ກຳລັງອັບເດດ...';
+
+            const userId = document.getElementById('editId').value;
+            const roleVal = document.getElementById('editRole').value;
+            const updatedData = {
+                name: document.getElementById('editName').value.trim(),
+                phone: document.getElementById('editPhone').value.trim(),
+                email: document.getElementById('editEmail').value.trim(),
+                role: roleVal,
+                salary: roleVal === 'teacher' ? Number(document.getElementById('editSalary').value || 0) : 0
+            };
+
+            const newPass = document.getElementById('editPass').value.trim();
+            if (newPass !== "") {
+                updatedData.password = newPass;
+            }
+
+            try {
+                const userRef = doc(db, "users", userId);
+                await updateDoc(userRef, updatedData);
+                
+                closeEditModal();
+                showPopup("✅ ອັບເດດຂໍ້ມູນຜູ້ໃຊ້ສຳເລັດແລ້ວ!", "ສຳເລັດ", "🎉", () => {
+                    loadUsers();
+                });
+            } catch (err) {
+                showPopup("❌ ບໍ່ສາມາດອັບເດດໄດ້: " + err.message, "ຜິດພາດ", "❌");
+            } finally {
+                btnUpdate.disabled = false;
+                btnUpdate.innerText = '💾 ບັນທຶກການແກ້ໄຂ';
+            }
+        };
+
+        // ຟັງຊັນຢືນຢັນການລົບ User
+        window.confirmDeleteUser = (userId, userName) => {
+            showConfirm(`ທ່ານແນ່ໃຈບໍທີ່ຈະລົບຜູ້ໃຊ້ "${userName}"? ການກະທຳນີ້ບໍ່ສາມາດຍົກເລີກໄດ້!`, "ຢືນຢັນການລົບ", "⚠️", async () => {
+                try {
+                    await deleteDoc(doc(db, "users", userId));
+                    showPopup("✅ ລົບຜູ້ໃຊ້ສຳເລັດແລ້ວ!", "ສຳເລັດ", "🗑️", () => {
+                        loadUsers();
+                    });
+                } catch (err) {
+                    showPopup("❌ ເກີດຂໍ້ຜິດພາດໃນການລົບ: " + err.message, "ຜິດພາດ", "❌");
+                }
+            });
+        };
+
+        // ເພີ່ມ User ໃໝ່
+        document.getElementById('addUserForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btnSave = document.getElementById('btnSave');
+            btnSave.disabled = true;
+            btnSave.innerText = 'ກຳລັງບັນທຶກ...';
+
+            const roleVal = document.getElementById('newRole').value;
+
+            try {
+                await addDoc(collection(db, "users"), {
+                    name: document.getElementById('newName').value.trim(),
+                    phone: document.getElementById('newPhone').value.trim(),
+                    email: document.getElementById('newEmail').value.trim(),
+                    password: document.getElementById('newPass').value.trim(),
+                    role: roleVal,
+                    salary: roleVal === 'teacher' ? Number(document.getElementById('newSalary').value || 0) : 0
+                });
+                
+                closeAddModal();
+                showPopup("✅ ເພີ່ມຜູ້ໃຊ້ໃໝ່ສຳເລັດແລ້ວ!", "ສຳເລັດ", "🎉", () => {
+                    loadUsers();
+                });
+            } catch (err) {
+                showPopup("❌ ເກີດຂໍ້ຜິດພາດ: " + err.message, "ຜິດພາດ", "❌");
+            } finally {
+                btnSave.disabled = false;
+                btnSave.innerText = '💾 ບັນທຶກ';
+            }
+        };
+
+        // ໂຫຼດຂໍ້ມູນເມື່ອເປີດໜ້າ
+        loadUsers();
+    </script>
+</body>
+</html>

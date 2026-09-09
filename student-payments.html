@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ຕິດຕາມສະຖານະການຊຳລະເງິນ - Tracking & Reminder</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --info: #0284c7;
+      --bg-gray: #f8fafc;
+      --border-color: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; font-family: 'Noto Sans Lao', sans-serif; }
+    body { margin: 0; padding: 12px; background-color: #f1f5f9; color: #1e293b; }
+    
+    .container { max-width: 1280px; margin: 0 auto; }
+    .card { background: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); margin-bottom: 16px; }
+    
+    /* Header */
+    .card-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+    .card-title { font-size: 18px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+    
+    /* Stats Section */
+    .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .stat-card { background: var(--bg-gray); padding: 12px 14px; border-radius: 10px; border-left: 4px solid var(--primary); }
+    .stat-card.green { border-left-color: var(--success); }
+    .stat-card.info { border-left-color: var(--info); }
+    .stat-card.red { border-left-color: var(--danger); }
+    .stat-title { font-size: 11px; color: #64748b; font-weight: 600; }
+    .stat-value { font-size: 18px; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .stat-sub { font-size: 11px; color: #475569; font-weight: 600; margin-top: 4px; line-height: 1.4; }
+
+    /* Filters */
+    .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .form-control { width: 100%; padding: 9px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 13px; outline: none; background-color: #fff; transition: all 0.2s; }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+    /* Table Responsive */
+    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border-color); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; background: #fff; }
+    th, td { padding: 12px 10px; text-align: center; border-bottom: 1px solid var(--border-color); }
+    th { background-color: #f8fafc; color: #475569; font-weight: 600; }
+    td.text-left { text-align: left; }
+    td.text-right { text-align: right; }
+
+    /* Badges & Buttons */
+    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+    .status-paid { background-color: #dcfce7; color: #15803d; }
+    .status-unpaid { background-color: #fee2e2; color: #b91c1c; }
+    .pay-type-badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 600; display: inline-block; }
+    .pay-cash { background-color: #fef9c3; color: #854d0e; }
+    .pay-transfer { background-color: #e0f2fe; color: #0369a1; }
+    
+    .btn { border: none; padding: 4px 6px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.2s; }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background-color: var(--primary); color: white; }
+    .btn-primary:hover { background-color: var(--primary-dark); }
+    .btn-warning { background-color: var(--warning); color: white; padding: 3px 5px; font-size: 10px; }
+    .btn-warning:hover { filter: brightness(0.95); }
+    .btn-danger { background-color: var(--danger); color: white; }
+    .btn-danger:hover { filter: brightness(0.95); }
+    .btn-info { background-color: var(--info); color: white; padding: 3px 5px; font-size: 10px; }
+    .btn-info:hover { filter: brightness(0.95); }
+    .btn-close { background-color: #64748b; color: white; padding: 4px 8px; font-size: 12px; }
+
+    /* Action group in table */
+    .action-group { display: flex; gap: 4px; justify-content: center; align-items: center; }
+
+    /* Modal Styling */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); justify-content: center; align-items: center; z-index: 1000; padding: 12px; }
+    .receipt-modal-content { background: #fff; width: 440px; max-width: 100%; padding: 20px; border-radius: 14px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); max-height: 90vh; display: flex; flex-direction: column; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .modal-title { font-size: 16px; font-weight: 700; color: #0f172a; margin: 0; }
+    .modal-body { overflow-y: auto; flex: 1; padding-right: 4px; }
+
+    /* History Grid in Modal */
+    .history-month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .history-month-box { border-radius: 8px; padding: 10px; text-align: center; font-size: 12px; border: 1px solid var(--border-color); }
+    .history-month-box.paid { background-color: #dcfce7; border-color: #bbf7d0; color: #15803d; font-weight: 600; }
+    .history-month-box.unpaid { background-color: #fee2e2; border-color: #fecaca; color: #b91c1c; font-weight: 600; }
+
+    /* Receipt Box Styling */
+    .receipt-box { 
+      width: 100%; 
+      max-width: 58mm;
+      margin: 0 auto 15px auto;
+      background: #fff; 
+      font-size: 11px; 
+      line-height: 1.4; 
+      color: #000; 
+      border: 1px dashed #cbd5e1; 
+      padding: 12px 10px; 
+      border-radius: 6px; 
+      box-sizing: border-box;
+      page-break-after: always;
+    }
+    .receipt-box .center { text-align: center; }
+    .receipt-box .line { border-bottom: 1px dashed #000; margin: 8px 0; }
+    
+    .r-row { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 4px; }
+    .r-label { color: #334155; white-space: nowrap; font-size: 11px; }
+    .r-val { text-align: right; font-weight: 600; font-size: 11px; }
+
+    .month-checkbox-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 8px 0; }
+    .month-item { border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 2px; text-align: center; font-size: 11px; cursor: pointer; background: var(--bg-gray); transition: 0.2s; }
+    .month-item:has(input:checked) { border-color: var(--primary); background: #eff6ff; color: var(--primary); font-weight: 600; }
+
+    .sibling-select-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; margin-top: 10px; }
+    .sibling-item { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 6px; cursor: pointer; }
+
+    @media (max-width: 640px) {
+      body { padding: 8px; }
+      .card { padding: 12px; }
+      .card-header { flex-direction: column; align-items: stretch; }
+      .card-header .btn { width: 100%; }
+      .filter-grid { grid-template-columns: 1fr 1fr; }
+      .filter-grid div:first-child { grid-column: span 2; }
+      .receipt-modal-content { padding: 16px; border-radius: 12px; }
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { display: block !important; position: absolute; left: 0; right: 0; top: 0; margin: 0 auto !important; width: 100% !important; max-width: 58mm !important; }
+      .receipt-box { border: none !important; padding: 2mm 1mm !important; margin-bottom: 10mm; }
+      .no-print { display: none !important; }
+      @page { size: 58mm auto; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📊 ຕິດຕາມ ແລະ ອອກໃບບິນທ້ວງເງິນ</div>
+        <button class="btn btn-danger" onclick="openAllUnpaidRemindersModal()" title="ພິມໃບບິນທ້ວງເງິນທັງໝົດ">🖨️</button>
+      </div>
+
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-title">👥 ນັກຮຽນທັງໝົດ</div>
+          <div class="stat-value" id="stat-total-students">0 ຄົນ</div>
+          <div class="stat-sub" id="stat-total-amount-sub">ລວມຄ່າຮຽນ: 0 ₭</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-title">✅ ຊຳລະແລ້ວ</div>
+          <div class="stat-value" id="stat-paid-count">0 ຄົນ</div>
+          <div class="stat-sub" id="stat-paid-amount-sub">ຮັບແລ້ວ: 0 ₭</div>
+        </div>
+        <div class="stat-card info">
+          <div class="stat-title">💵 ເງິນສົດ / 💳 ເງິນໂອນ (ຄົນ)</div>
+          <div class="stat-value" id="stat-pay-type-count" style="font-size: 15px; margin-top: 4px;">0 / 0 ຄົນ</div>
+          <div class="stat-sub" id="stat-pay-amount-sub">ສົດ: 0 ₭<br>ໂອນ: 0 ₭</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-title">❌ ຍັງບໍ່ຊຳລະ</div>
+          <div class="stat-value" id="stat-unpaid-count">0 ຄົນ</div>
+          <div class="stat-sub" id="stat-unpaid-amount-sub">ຄ້າງຈ່າຍ: 0 ₭</div>
+        </div>
+      </div>
+
+      <div class="filter-grid">
+        <div><input type="text" id="search-student" class="form-control" placeholder="🔍 ຄົ້ນຫາ ຊື່ / ລະຫັດ / ເບີໂທ..." oninput="filterData()"></div>
+        <div><select id="filter-month" class="form-control" onchange="filterData()"></select></div>
+        <div><select id="filter-room" class="form-control" onchange="filterData()"><option value="">-- ທຸກຊົ່ວໂມງຮຽນ --</option></select></div>
+        <div><select id="filter-teacher" class="form-control" onchange="filterData()"><option value="">-- ທຸກອາຈານ --</option></select></div>
+        <div>
+          <select id="filter-status" class="form-control" onchange="filterData()">
+            <option value="">-- ທຸກສະຖານະ --</option>
+            <option value="PAID">✅ ຊຳລະແລ້ວ</option>
+            <option value="CASH">💵 ເງິນສົດ</option>
+            <option value="TRANSFER">💳 ເງິນໂອນ</option>
+            <option value="UNPAID">❌ ຍັງບໍ່ຊຳລະ</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ລະຫັດນັກຮຽນ</th>
+              <th>ຊື່ ແລະ ນາມສະກຸນ</th>
+              <th>ຊົ່ວໂມງຮຽນ</th>
+              <th>ອາຈານຜູ້ສອນ</th>
+              <th>ເບີໂທ</th>
+              <th>ອ້າຍນ້ອງ (ລະຫັດຄອບຄົວ)</th>
+              <th>ຄ່າຮຽນ/ເດືອນ</th>
+              <th>ສະຖານະ (<span id="selected-month-label"></span>)</th>
+              <th>ປະເພດຈ່າຍ</th>
+              <th>ເດືອນທີ່ຊຳລະແລ້ວ</th>
+              <th>ຈັດການ / ປະຫວັດ</th>
+            </tr>
+          </thead>
+          <tbody id="tracking-tbody">
+            <tr><td colspan="12" style="padding: 20px; color: #64748b;">ກຳລັງໂຫຼດຂໍ້ມູນ...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal ເບິ່ງປະຫວັດການຊຳລະ (12 ເດືອນ) -->
+  <div class="modal-overlay" id="history-modal">
+    <div class="receipt-modal-content" style="width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: var(--info);">📋 ປະຫວັດການຊຳລະຄ່າຮຽນ (ທັງໝົດ 12 ເດືອນ)</h3>
+        <button class="btn btn-close" onclick="closeHistoryModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="background: var(--bg-gray); padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; border: 1px solid var(--border-color);">
+          <div>ນັກຮຽນ: <b id="h-student-name" style="color: var(--primary);">---</b></div>
+          <div>ລະຫັດ: <b id="h-student-id">---</b> | ຊົ່ວໂມງ: <b id="h-student-room">---</b></div>
+        </div>
+        <div style="font-size: 12px; font-weight: 600; margin-bottom: 6px;">ສະຖານະການຊຳລະແຕ່ລະເດືອນ:</div>
+        <div class="history-month-grid" id="history-month-grid-container"></div>
+      </div>
+      <div style="margin-top: 15px;">
+        <button type="button" class="btn btn-close" style="width: 100%;" onclick="closeHistoryModal()">ປິດ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal ທ້ວງເງິນ (ດ່ຽວ) -->
+  <div class="modal-overlay" id="reminder-modal">
+    <div class="receipt-modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: var(--primary);">⚠️ ອອກໃບບິນທ້ວງເງິນ</h3>
+        <button class="btn btn-close" onclick="closeReminderModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+          <div style="width: 35%;">
+            <label style="font-size: 11px; font-weight: 600;">ລະຫັດນັກຮຽນ:</label>
+            <input type="text" id="m-student-id-input" class="form-control" style="padding: 6px 8px; font-weight: 700; background:#f1f5f9;" readonly>
+          </div>
+          <div style="width: 25%;">
+            <label style="font-size: 11px; font-weight: 600;">ຄຳນຳໜ້າ:</label>
+            <select id="m-prefix-select" class="form-control" style="padding: 6px 8px;" onchange="updateModalTotal()">
+              <option value="ທ້າວ">ທ້າວ</option>
+              <option value="ນາງ">ນາງ</option>
+              <option value="ທ່ານ">ທ່ານ</option>
+              <option value="ດຣ">ດຣ</option>
+              <option value="">(ບໍ່ມີ)</option>
+            </select>
+          </div>
+          <div style="width: 40%;">
+            <label style="font-size: 11px; font-weight: 600;">ຊື່ ແລະ ນາມສະກຸນ:</label>
+            <input type="text" id="m-student-name-input" class="form-control" style="padding: 6px 8px; font-weight: 700; color: var(--primary);">
+          </div>
+        </div>
+
+        <div id="m-sibling-container" class="sibling-select-box" style="display:none;">
+          <div style="font-size:12px; font-weight:700; color:#15803d;">👨‍👩‍👧‍👦 ພົບອ້າຍນ້ອງ (ຕິກເລືອກເພີ່ມຖ້າຕ້ອງການອອກບິນຮ່ວມ):</div>
+          <div id="m-sibling-list"></div>
+        </div>
+
+        <div style="font-size:12px; font-weight:600; margin-top:12px;">🗓️ ຕິກເລືອກເດືອນທີ່ຈະທ້ວງ:</div>
+        <div class="month-checkbox-grid" id="m-month-select-container"></div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+          <div>
+            <label style="font-size:11px; font-weight:600;">💵 ຄ່າຮຽນປົກກະຕິ/ຄົນ:</label>
+            <input type="number" id="m-rate-input" class="form-control" style="padding:6px 8px;" oninput="updateModalTotal()">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600;">💸 ສ່ວນຫຼຸດອ້າຍນ້ອງ/ຄົນ:</label>
+            <input type="number" id="m-discount-input" class="form-control" style="padding:6px 8px;" oninput="updateModalTotal()">
+          </div>
+        </div>
+
+        <div style="background:var(--bg-gray); padding:10px; border-radius:8px; margin-top:12px; font-size:12px; border:1px solid var(--border-color);">
+          <div>ສະຖານະ: <b id="m-count-display" style="color:#15803d;">ຄ່າຮຽນເຕັມ (1 ຄົນ)</b></div>
+          <div>ຄ່າຮຽນສຸດທິ/ຄົນ/ເດືອນ: <b id="m-net-rate-display" style="color:#2563eb;">170,000 ₭</b></div>
+          <div style="margin-top:4px; font-size:13px;">ລວມເງິນທ້ວງຊຳລະ: <b id="m-total-display" style="color:var(--danger); font-size:15px;">0 LAK</b></div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:15px;">
+        <button type="button" class="btn btn-warning" style="flex:1; padding: 6px 8px; font-size: 11px;" onclick="generateAndShowSingleReceipt()">🖨️ ສະແດງໃບບິນທ້ວງ</button>
+        <button type="button" class="btn btn-close" onclick="closeReminderModal()">ປິດ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Preview / ພິມໃບບິນ -->
+  <div class="modal-overlay" id="print-modal">
+    <div class="receipt-modal-content" style="width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🖨️ ຕົວຢ່າງໃບບິນກ່ອນພິມ</h3>
+        <button class="btn btn-close" onclick="closePrintModal()">✕</button>
+      </div>
+      <div class="modal-body" style="background: #f8fafc; padding: 12px; border-radius: 8px;">
+        <div id="print-area"></div>
+      </div>
+      <div class="no-print" style="display:flex; gap:8px; margin-top:15px;">
+        <button type="button" class="btn btn-danger" style="flex:1;" onclick="window.print()">🖨️ ຢືນຢັນພິມໃບບິນ (58mm)</button>
+        <button type="button" class="btn btn-close" onclick="closePrintModal()">ປິດ</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db } from './js/firebase-config.js';
+    import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    let studentsList = [];
+    let paymentsList = [];
+    let processedStudentsData = [];
+    let selectedStudentForReminder = null;
+    let schoolInfo = { name: "ໃບບິນທ້ວງຊຳລະຄ່າຮຽນ", phone: "" };
+    
+    const BASE_TUITION_RATE = 170000;
+    const DISCOUNT_PER_PERSON = 10000;
+
+    function extractTeacherName(sObj) {
+      if (!sObj) return '-';
+      return sObj.teacher || sObj.teacherName || sObj.teacher_name || sObj.selectTeacher || sObj.teacherId || '-';
+    }
+
+    function extractRoomName(sObj) {
+      if (!sObj) return '-';
+      return sObj.room || sObj.schedule || sObj.class || sObj.time || '-';
+    }
+
+    function extractCustomStudentId(sObj) {
+      if (!sObj) return '-';
+      return sObj.studentId || sObj.student_id || sObj.code || sObj.customId || sObj.idNumber || sObj.id_number || sObj.myId || '';
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      initMonthDropdown();
+      await loadSchoolSettings();
+      await loadFilters();
+      await loadAllData();
+    });
+
+    function initMonthDropdown() {
+      const monthSelect = document.getElementById('filter-month');
+      const currentMonth = new Date().getMonth() + 1;
+      monthSelect.innerHTML = '';
+      
+      for (let i = 1; i <= 12; i++) {
+        const mVal = `ດ${i}`;
+        const selected = (i === currentMonth) ? 'selected' : '';
+        monthSelect.innerHTML += `<option value="${mVal}" ${selected}>ເດືອນ ${i} (${mVal})</option>`;
+      }
+    }
+
+    async function loadSchoolSettings() {
+      try {
+        const schoolSnap = await getDoc(doc(db, "settings", "school_info"));
+        if(schoolSnap.exists()) {
+          const s = schoolSnap.data();
+          schoolInfo.name = s.name || "ໃບບິນທ້ວງຊຳລະຄ່າຮຽນ";
+          schoolInfo.phone = s.phone ? `Tel: ${s.phone}` : "";
+        }
+      } catch(e) { console.error(e); }
+    }
+
+    async function loadFilters() {
+      try {
+        const schedSnap = await getDocs(collection(db, "setting_schedules"));
+        const roomSelect = document.getElementById('filter-room');
+        schedSnap.forEach(d => { roomSelect.innerHTML += `<option value="${d.data().title}">${d.data().title}</option>`; });
+
+        const teacherSnap = await getDocs(collection(db, "setting_teachers"));
+        const teacherSelect = document.getElementById('filter-teacher');
+        teacherSnap.forEach(d => { teacherSelect.innerHTML += `<option value="${d.data().name}">${d.data().name}</option>`; });
+      } catch (err) { console.error("Error loading filters:", err); }
+    }
+
+    async function loadAllData() {
+      try {
+        const sSnap = await getDocs(collection(db, "students"));
+        studentsList = [];
+        sSnap.forEach(d => studentsList.push({ firebaseDocId: d.id, ...d.data() }));
+
+        const pSnap = await getDocs(collection(db, "payments"));
+        paymentsList = [];
+        pSnap.forEach(d => paymentsList.push({ id: d.id, ...d.data() }));
+
+        filterData();
+      } catch (err) { console.error("Error loading tracking data:", err); }
+    }
+
+    function getSiblingsList(student) {
+      return studentsList.filter(s => {
+        if (s.firebaseDocId === student.firebaseDocId) return false;
+        
+        const famId1 = (student.familyId || student.family_id || student.famId || '').toString().trim();
+        const famId2 = (s.familyId || s.family_id || s.famId || '').toString().trim();
+        const matchFamilyId = (famId1 !== '' && famId1 === famId2);
+
+        const sArr1 = Array.isArray(student.siblingIds) ? student.siblingIds : (Array.isArray(student.siblings) ? student.siblings : []);
+        const sArr2 = Array.isArray(s.siblingIds) ? s.siblingIds : (Array.isArray(s.siblings) ? s.siblings : []);
+        const matchSiblingIds = sArr1.includes(s.firebaseDocId) || sArr2.includes(s.firebaseDocId) || sArr1.includes(s.customStudentId) || sArr2.includes(s.customStudentId);
+
+        const parentPhone1 = (student.parentPhone || student.phone || '').toString().trim();
+        const parentPhone2 = (s.parentPhone || s.phone || '').toString().trim();
+        const matchPhone = (parentPhone1 !== '' && parentPhone1 === parentPhone2);
+
+        return matchFamilyId || matchSiblingIds || matchPhone;
+      });
+    }
+
+    window.filterData = () => {
+      const searchVal = document.getElementById('search-student').value.trim().toLowerCase();
+      const targetMonth = document.getElementById('filter-month').value;
+      const roomVal = document.getElementById('filter-room').value;
+      const teacherVal = document.getElementById('filter-teacher').value;
+      const statusVal = document.getElementById('filter-status').value;
+
+      document.getElementById('selected-month-label').innerText = targetMonth;
+
+      let paidCount = 0;
+      let unpaidCount = 0;
+      let cashCount = 0;
+      let transferCount = 0;
+      let cashTotalAmount = 0;
+      let transferTotalAmount = 0;
+      let totalExpectedAmountSum = 0;
+      let totalPaidAmountSum = 0;
+      let totalUnpaidAmountSum = 0;
+
+      processedStudentsData = studentsList.map(student => {
+        // ກວດສອບຟິວຄຳນຳໜ້າຊື່ຈາກຫຼາຍໆຮູບແບບໃນ Firebase
+        let prefix = (student.prefix || student.title || student.gender || student.sex || '').toString().trim();
+        let rawName = (student.name || student.fullName || student.studentName || student.student_name || '').toString().trim();
+        
+        // ຖ້າ prefix ເປັນ "ชาย" ຫຼື "ຍິງ" ຫຼືຄ່າອື່ນທີ່ບໍ່ແມ່ນຄຳນຳໜ້າລາວ ໃຫ້ລ້າງອອກ
+        if (prefix === 'ชาย' || prefix === 'Male' || prefix === 'm' || prefix === '1') prefix = 'ທ້າວ';
+        if (prefix === 'ຍິງ' || prefix === 'Female' || prefix === 'f' || prefix === '2') prefix = 'ນາງ';
+
+        // ຖ້າໃນຊື່ມີຄຳນຳໜ້າຕິດມາ ໃຫ້ແຍກອອກ
+        ['ທ້າວ', 'ນາງ', 'ທ່ານ', 'ດຣ'].forEach(p => {
+          if (rawName.startsWith(p + ' ')) {
+            rawName = rawName.replace(p + ' ', '').trim();
+            if (!prefix || prefix.length > 5) prefix = p;
+          }
+        });
+
+        // ຖ້າຍັງບໍ່ໄດ້ຄຳນຳໜ້າ ແຕ່ໃນ rawName ມີຄຳວ່າ ທ້າວ/ນາງ ຢູ່ທາງໃນ
+        if (!prefix || (prefix !== 'ທ້າວ' && prefix !== 'ນາງ' && prefix !== 'ທ່ານ' && prefix !== 'ດຣ')) {
+          if (rawName.startsWith('ທ້າວ')) { prefix = 'ທ້າວ'; rawName = rawName.replace('ທ້າວ', '').trim(); }
+          else if (rawName.startsWith('ນາງ')) { prefix = 'ນາງ'; rawName = rawName.replace('ນາງ', '').trim(); }
+        }
+
+        let fullStudentName = rawName;
+        if (prefix === 'ທ້າວ' || prefix === 'ນາງ' || prefix === 'ທ່ານ' || prefix === 'ດຣ') {
+          fullStudentName = `${prefix} ${rawName}`;
+        } else if (prefix) {
+          fullStudentName = `${prefix} ${rawName}`;
+        }
+
+        let customId = extractCustomStudentId(student);
+        if (!customId || customId === '-') {
+          customId = student.firebaseDocId;
+        }
+        const customIdLower = customId.toLowerCase();
+        
+        const siblings = getSiblingsList(student);
+        const siblingCount = siblings.length + 1;
+        const familyCode = student.familyId || student.family_id || student.famId || '-';
+
+        let calculatedFeePerPerson = BASE_TUITION_RATE;
+        if (siblingCount >= 2) {
+          calculatedFeePerPerson = BASE_TUITION_RATE - DISCOUNT_PER_PERSON;
+        }
+
+        const paidMonthsSet = new Set();
+        let isMatchedTargetPayment = false;
+        let accumulatedBillAmount = 0;
+        let hasCashForTarget = false;
+        let hasTransferForTarget = false;
+
+        paymentsList.forEach(bill => {
+          if (!bill) return;
+
+          const billStr = JSON.stringify(bill).toLowerCase();
+          
+          let idInBill = (
+            bill.studentId || bill.student_id || bill.customStudentId || 
+            bill.code || bill.id || bill.studentCode || bill.myId || ''
+          ).toString().trim();
+
+          const rawNameField = (bill.studentName || bill.name || bill.fullName || bill.student || '').toString();
+          if (!idInBill && rawNameField.includes('[')) {
+            const matchBracket = rawNameField.match(/\[(.*?)\]/);
+            if (matchBracket) idInBill = matchBracket[1].trim();
+          }
+
+          const idInBillLower = idInBill.toLowerCase();
+          
+          let isMatchStudent = false;
+          if (customId !== '' && (idInBill === customId || idInBillLower === customIdLower)) {
+            isMatchStudent = true;
+          } else if (student.firebaseDocId && (idInBill === student.firebaseDocId || idInBillLower === student.firebaseDocId.toLowerCase())) {
+            isMatchStudent = true;
+          } else if (rawNameField.toLowerCase().includes(customId.toLowerCase())) {
+            isMatchStudent = true;
+          }
+
+          if (!isMatchStudent) return;
+
+          const monthsField = (bill.months || bill.month || bill.monthList || bill.selectedMonths || '').toString();
+          const monthsArr = monthsField.split(',').map(m => m.trim());
+          
+          const isMatchMonth = monthsArr.includes(targetMonth) || billStr.includes(targetMonth.toLowerCase());
+
+          const amountVal = parseFloat(
+            bill.totalAmount || bill.amount || bill.total || 
+            bill.grandTotal || bill.netTotal || bill.sum || 
+            bill.price || bill.paidAmount || bill.paid || 
+            bill.totalPrice || bill.fee || 0
+          );
+
+          const billPeopleCount = parseInt(
+            bill.peopleCount || bill.studentCount || bill.totalPeople || 
+            bill.count || bill.siblingsCount || 0
+          );
+          
+          let divisor = billPeopleCount > 0 ? billPeopleCount : 1;
+          if (divisor === 1 && siblingCount > 1) {
+            if (amountVal >= (calculatedFeePerPerson * 2)) {
+              divisor = siblingCount;
+            }
+          }
+
+          const payMethodField = (bill.paymentMethod || bill.payType || bill.type || bill.method || bill.payment_type || '').toString().toLowerCase();
+          const isTransfer = (
+            payMethodField.includes('transfer') || payMethodField.includes('ໂອນ') || payMethodField.includes('bank') || payMethodField.includes('qr') ||
+            billStr.includes('transfer') || billStr.includes('ໂອນ') || billStr.includes('bank') || billStr.includes('qr') || 
+            billStr.includes('obile') || billStr.includes('app') || billStr.includes('bcel') || billStr.includes('jdb') || billStr.includes('laoqr')
+          );
+
+          if (isMatchMonth) {
+            isMatchedTargetPayment = true;
+            const billMonthsCount = monthsArr.length > 0 ? monthsArr.length : 1;
+            const fallbackAmount = calculatedFeePerPerson * billMonthsCount;
+            
+            const rawCurrentAmount = amountVal > 0 ? amountVal : (fallbackAmount * divisor);
+            const currentBillAmount = rawCurrentAmount / divisor;
+            
+            accumulatedBillAmount += currentBillAmount;
+
+            if (isTransfer) {
+              hasTransferForTarget = true;
+            } else {
+              hasCashForTarget = true;
+            }
+          }
+
+          monthsArr.forEach(m => { if (m) paidMonthsSet.add(m); });
+          for (let i = 1; i <= 12; i++) {
+            if (billStr.includes(`ດ${i}`)) {
+              paidMonthsSet.add(`ດ${i}`);
+            }
+          }
+        });
+
+        let paymentTypeForTarget = 'CASH';
+        if (hasTransferForTarget) {
+          paymentTypeForTarget = 'TRANSFER';
+        }
+
+        const paidMonthsArray = Array.from(paidMonthsSet);
+        const isPaidForTargetMonth = paidMonthsSet.has(targetMonth) || isMatchedTargetPayment;
+        const finalDisplayAmount = accumulatedBillAmount > 0 ? accumulatedBillAmount : calculatedFeePerPerson;
+
+        totalExpectedAmountSum += calculatedFeePerPerson;
+
+        if (isPaidForTargetMonth) {
+          paidCount++;
+          totalPaidAmountSum += finalDisplayAmount;
+          if (paymentTypeForTarget === 'TRANSFER') {
+            transferCount++;
+            transferTotalAmount += finalDisplayAmount;
+          } else {
+            cashCount++;
+            cashTotalAmount += finalDisplayAmount;
+          }
+        } else {
+          unpaidCount++;
+          totalUnpaidAmountSum += calculatedFeePerPerson;
+        }
+
+        return {
+          ...student,
+          prefix: (prefix === 'ທ້າວ' || prefix === 'ນາງ' || prefix === 'ທ່ານ' || prefix === 'ດຣ') ? prefix : 'ທ້າວ',
+          name: rawName,
+          customStudentId: customId,
+          displayName: fullStudentName,
+          teacherName: extractTeacherName(student),
+          roomName: extractRoomName(student),
+          isPaid: isPaidForTargetMonth,
+          paymentType: paymentTypeForTarget,
+          paidAmount: finalDisplayAmount,
+          paidMonthsList: paidMonthsArray,
+          siblings: siblings,
+          siblingCount: siblingCount,
+          familyCode: familyCode,
+          calculatedFee: calculatedFeePerPerson
+        };
+      });
+
+      document.getElementById('stat-total-students').innerText = `${studentsList.length} ຄົນ`;
+      document.getElementById('stat-total-amount-sub').innerText = `ລວມຄ່າຮຽນ: ${totalExpectedAmountSum.toLocaleString()} ₭`;
+
+      document.getElementById('stat-paid-count').innerText = `${paidCount} ຄົນ`;
+      document.getElementById('stat-paid-amount-sub').innerText = `ຮັບແລ້ວ: ${totalPaidAmountSum.toLocaleString()} ₭`;
+
+      document.getElementById('stat-pay-type-count').innerText = `${cashCount} / ${transferCount} ຄົນ`;
+      document.getElementById('stat-pay-amount-sub').innerHTML = `ສົດ: ${cashTotalAmount.toLocaleString()} ₭<br>ໂອນ: ${transferTotalAmount.toLocaleString()} ₭`;
+
+      document.getElementById('stat-unpaid-count').innerText = `${unpaidCount} ຄົນ`;
+      document.getElementById('stat-unpaid-amount-sub').innerText = `ຄ້າງຈ່າຍ: ${totalUnpaidAmountSum.toLocaleString()} ₭`;
+
+      const filtered = processedStudentsData.filter(s => {
+        const matchSearch = (s.displayName && s.displayName.toLowerCase().includes(searchVal)) || 
+                            (s.phone && s.phone.includes(searchVal)) || 
+                            (s.familyCode && s.familyCode.toLowerCase().includes(searchVal)) || 
+                            (s.customStudentId && s.customStudentId.toLowerCase().includes(searchVal));
+        const matchRoom = roomVal ? (s.roomName === roomVal) : true;
+        const matchTeacher = teacherVal ? (s.teacherName === teacherVal) : true;
+        
+        let matchStatus = true;
+        if (statusVal === 'PAID') matchStatus = s.isPaid;
+        else if (statusVal === 'CASH') matchStatus = s.isPaid && s.paymentType === 'CASH';
+        else if (statusVal === 'TRANSFER') matchStatus = s.isPaid && s.paymentType === 'TRANSFER';
+        else if (statusVal === 'UNPAID') matchStatus = !s.isPaid;
+
+        return matchSearch && matchRoom && matchTeacher && matchStatus;
+      });
+
+      renderTable(filtered);
+    };
+
+    function renderTable(data) {
+      const tbody = document.getElementById('tracking-tbody');
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="12" style="color:#94a3b8; padding:20px;">ບໍ່ພົບຂໍ້ມູນນັກຮຽນຕາມເງື່ອນໄຂທີ່ເລືອກ</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map((s, index) => {
+        let payTypeBadge = '<span style="color:#94a3b8;">-</span>';
+        if (s.isPaid) {
+          if (s.paymentType === 'TRANSFER') {
+            payTypeBadge = '<span class="pay-type-badge pay-transfer">💳 ເງິນໂອນ</span>';
+          } else {
+            payTypeBadge = '<span class="pay-type-badge pay-cash">💵 ເງິນສົດ</span>';
+          }
+        }
+
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td><code style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-weight:bold; color:var(--primary);">${s.customStudentId}</code></td>
+            <td class="text-left"><b>${s.displayName}</b></td>
+            <td>${s.roomName}</td>
+            <td>${s.teacherName}</td>
+            <td>${s.phone || '-'}</td>
+            <td>
+              ${s.siblingCount > 1 
+                ? `<span style="color:var(--success); font-weight:600;">👨‍👩‍👧‍👦 ${s.siblingCount} ຄົນ (${s.familyCode})</span>` 
+                : `<span style="color:#94a3b8;">${s.familyCode}</span>`}
+            </td>
+            <td class="text-right">
+              <b style="${s.siblingCount > 1 ? 'color:var(--success);' : ''}">
+                ${s.paidAmount.toLocaleString() + ' ₭'}
+              </b>
+            </td>
+            <td>
+              ${s.isPaid 
+                ? `<span class="status-badge status-paid">✅ ຊຳລະແລ້ວ</span>` 
+                : `<span class="status-badge status-unpaid">❌ ຍັງບໍ່ຊຳລະ</span>`}
+            </td>
+            <td>${payTypeBadge}</td>
+            <td style="color:var(--primary); font-weight:600;">
+              ${s.paidMonthsList.length > 0 ? s.paidMonthsList.join(', ') : '-'}
+            </td>
+            <td>
+              <div class="action-group">
+                <button class="btn btn-info" title="ເບິ່ງປະຫວັດການຊຳລະ" onclick="openHistoryModal('${s.firebaseDocId}')">👁️</button>
+                ${!s.isPaid ? `<button class="btn btn-warning" title="ພິມໃບບິນທ້ວງເງິນ" onclick="openReminderModal('${s.firebaseDocId}')">🖨️</button>` : '-'}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // 👁️ ເປີດ Modal ເບິ່ງປະຫວັດ 12 ເດືອນ
+    window.openHistoryModal = (firebaseDocId) => {
+      const student = processedStudentsData.find(s => s.firebaseDocId === firebaseDocId);
+      if (!student) return;
+
+      document.getElementById('h-student-name').innerText = student.displayName;
+      document.getElementById('h-student-id').innerText = student.customStudentId;
+      document.getElementById('h-student-room').innerText = student.roomName;
+
+      const gridContainer = document.getElementById('history-month-grid-container');
+      gridContainer.innerHTML = '';
+
+      for (let i = 1; i <= 12; i++) {
+        const mVal = `ດ${i}`;
+        const isPaid = student.paidMonthsList.includes(mVal);
+
+        gridContainer.innerHTML += `
+          <div class="history-month-box ${isPaid ? 'paid' : 'unpaid'}">
+            <div style="font-size: 11px; opacity: 0.8;">ເດືອນ ${i}</div>
+            <div style="font-size: 13px; margin-top: 2px;">${isPaid ? '✅ ຊຳລະແລ້ວ' : '❌ ຍັງບໍ່ຈ່າຍ'}</div>
+          </div>
+        `;
+      }
+
+      document.getElementById('history-modal').style.display = 'flex';
+    };
+
+    window.closeHistoryModal = () => {
+      document.getElementById('history-modal').style.display = 'none';
+    };
+
+    window.openReminderModal = (firebaseDocId) => {
+      selectedStudentForReminder = processedStudentsData.find(s => s.firebaseDocId === firebaseDocId);
+      if (!selectedStudentForReminder) return;
+
+      document.getElementById('m-student-id-input').value = selectedStudentForReminder.customStudentId || '';
+      
+      const prefixSelect = document.getElementById('m-prefix-select');
+      prefixSelect.value = selectedStudentForReminder.prefix || "ທ້າວ";
+      document.getElementById('m-student-name-input').value = selectedStudentForReminder.name || '';
+      
+      document.getElementById('m-rate-input').value = BASE_TUITION_RATE;
+
+      const sibContainer = document.getElementById('m-sibling-container');
+      const sibList = document.getElementById('m-sibling-list');
+      sibList.innerHTML = '';
+
+      if (selectedStudentForReminder.siblings && selectedStudentForReminder.siblings.length > 0) {
+        document.getElementById('m-discount-input').value = DISCOUNT_PER_PERSON;
+        sibContainer.style.display = 'block';
+
+        selectedStudentForReminder.siblings.forEach(sib => {
+          const sibFullName = (sib.prefix ? `${sib.prefix} ` : '') + (sib.name || '');
+          sibList.innerHTML += `
+            <label class="sibling-item">
+              <input type="checkbox" value="${sibFullName}" class="m-sib-check" checked onchange="updateModalTotal()">
+              <span><b>[${sib.customStudentId}] ${sibFullName}</b> (${extractRoomName(sib)})</span>
+            </label>
+          `;
+        });
+      } else {
+        document.getElementById('m-discount-input').value = 0;
+        sibContainer.style.display = 'none';
+      }
+
+      const targetMonth = document.getElementById('filter-month').value;
+      const monthContainer = document.getElementById('m-month-select-container');
+      monthContainer.innerHTML = '';
+
+      for (let i = 1; i <= 12; i++) {
+        const mVal = `ດ${i}`;
+        const isPaid = selectedStudentForReminder.paidMonthsList.includes(mVal);
+        const isTarget = (mVal === targetMonth);
+
+        monthContainer.innerHTML += `
+          <label class="month-item" style="${isPaid ? 'opacity:0.4; background:#f1f5f9;' : ''}">
+            <input type="checkbox" value="${mVal}" class="m-month-check" ${isPaid ? 'disabled' : ''} ${isTarget && !isPaid ? 'checked' : ''} onchange="updateModalTotal()">
+            ${mVal}
+          </label>
+        `;
+      }
+
+      updateModalTotal();
+      document.getElementById('reminder-modal').style.display = 'flex';
+    };
+
+    window.updateModalTotal = () => {
+      const checkedMonths = document.querySelectorAll('.m-month-check:checked').length;
+      const checkedSiblings = document.querySelectorAll('.m-sib-check:checked').length;
+      const totalPeopleCount = 1 + checkedSiblings;
+
+      const baseRate = parseFloat(document.getElementById('m-rate-input').value) || BASE_TUITION_RATE;
+      let discountPerPerson = parseFloat(document.getElementById('m-discount-input').value) || 0;
+
+      if (totalPeopleCount === 1) discountPerPerson = 0;
+
+      const netRatePerPerson = baseRate - discountPerPerson; 
+      const totalAmount = (netRatePerPerson * totalPeopleCount) * checkedMonths;
+
+      document.getElementById('m-count-display').innerText = totalPeopleCount > 1 
+        ? `ມີອ້າຍນ້ອງ ${totalPeopleCount} ຄົນ (ຫຼຸດຄົນລະ ${discountPerPerson.toLocaleString()} ₭)` 
+        : `ຄ່າຮຽນເຕັມ (1 ຄົນ)`;
+        
+      document.getElementById('m-net-rate-display').innerText = netRatePerPerson.toLocaleString() + " ₭ / ຄົນ";
+      document.getElementById('m-total-display').innerText = totalAmount.toLocaleString() + " LAK";
+    };
+
+    window.closeReminderModal = () => {
+      document.getElementById('reminder-modal').style.display = 'none';
+    };
+
+    window.generateAndShowSingleReceipt = () => {
+      const checkedMonths = Array.from(document.querySelectorAll('.m-month-check:checked')).map(c => c.value);
+      if (checkedMonths.length === 0) return alert("ກະລຸນາເລືອກເດືອນຢ່າງນ້ອຍ 1 ເດືອນເພື່ອທ້ວງເງິນ!");
+
+      const prefix = document.getElementById('m-prefix-select').value;
+      const rawName = document.getElementById('m-student-name-input').value.trim();
+      const fullStudentName = prefix ? `${prefix} ${rawName}` : rawName;
+
+      const selectedSiblings = Array.from(document.querySelectorAll('.m-sib-check:checked')).map(c => c.value);
+      const baseRate = parseFloat(document.getElementById('m-rate-input').value) || BASE_TUITION_RATE;
+      let discountPerPerson = parseFloat(document.getElementById('m-discount-input').value) || 0;
+
+      if (selectedSiblings.length === 0) discountPerPerson = 0;
+
+      const receiptHTML = createReminderReceiptHTML(
+        { ...selectedStudentForReminder, displayName: fullStudentName }, 
+        selectedSiblings, 
+        checkedMonths, 
+        baseRate, 
+        discountPerPerson
+      );
+      
+      document.getElementById('print-area').innerHTML = receiptHTML;
+      closeReminderModal();
+      document.getElementById('print-modal').style.display = 'flex';
+    };
+
+    window.openAllUnpaidRemindersModal = () => {
+      const targetMonth = document.getElementById('filter-month').value;
+      const unpaidList = processedStudentsData.filter(s => !s.isPaid);
+
+      if (unpaidList.length === 0) {
+        return alert(`🎉 ບໍ່ມີນັກຮຽນຄ້າງຊຳລະຄ່າຮຽນ ສຳລັບເດືອນ ${targetMonth}!`);
+      }
+
+      let allReceiptsHTML = '';
+      unpaidList.forEach(student => {
+        const sibNames = student.siblings ? student.siblings.map(s => (s.prefix ? `${s.prefix} ` : '') + (s.name || '')) : [];
+        const discount = sibNames.length > 0 ? DISCOUNT_PER_PERSON : 0;
+        allReceiptsHTML += createReminderReceiptHTML(student, sibNames, [targetMonth], BASE_TUITION_RATE, discount);
+      });
+
+      document.getElementById('print-area').innerHTML = allReceiptsHTML;
+      document.getElementById('print-modal').style.display = 'flex';
+    };
+
+    function createReminderReceiptHTML(student, sibNames, monthsArray, baseRate, discountPerPerson) {
+      const totalPeopleCount = 1 + sibNames.length;
+      const netRatePerPerson = totalPeopleCount > 1 ? (baseRate - discountPerPerson) : baseRate;
+      const totalForBill = (netRatePerPerson * totalPeopleCount) * monthsArray.length;
+      const today = new Date().toLocaleDateString('lo-LA');
+
+      return `
+        <div class="receipt-box">
+          <div class="center">
+            <b style="font-size: 13px;">${schoolInfo.name}</b><br>
+            <span style="font-size: 10px; color:#475569;">${schoolInfo.phone}</span><br>
+            <b style="font-size: 12px; color:#dc2626; display:block; margin-top:4px;">⚠️ ໃບບິນທ້ວງຊຳລະຄ່າຮຽນ</b>
+          </div>
+          
+          <div class="line"></div>
+          
+          <div class="r-row"><span class="r-label">ວັນທີແຈ້ງ:</span><span class="r-val">${today}</span></div>
+          <div class="r-row"><span class="r-label">ລະຫັດນັກຮຽນ:</span><span class="r-val" style="color:var(--primary); font-weight:bold;">${student.customStudentId || '-'}</span></div>
+          <div class="r-row"><span class="r-label">ຊື່ນັກຮຽນ:</span><span class="r-val">${student.displayName || '-'}</span></div>
+          <div class="r-row"><span class="r-label">ຊົ່ວໂມງຮຽນ:</span><span class="r-val">${student.roomName}</span></div>
+          <div class="r-row"><span class="r-label">ອາຈານ:</span><span class="r-val">${student.teacherName}</span></div>
+          
+          ${sibNames.length > 0 ? `
+            <div class="r-row" style="color:#16a34a;">
+              <span class="r-label">ອ້າຍນ້ອງຮ່ວມບິນ:</span>
+              <span class="r-val">${sibNames.join(', ')}</span>
+            </div>
+          ` : ''}
+
+          <div class="line"></div>
+          
+          <div class="r-row"><span class="r-label">ເດືອນທີ່ຄ້າງ (${monthsArray.length} ເດືອນ):</span><span class="r-val" style="color:#dc2626;">${monthsArray.join(', ')}</span></div>
+          
+          ${totalPeopleCount > 1 ? `
+            <div class="r-row"><span class="r-label">ຄ່າຮຽນປົກກະຕິ:</span><span class="r-val">${baseRate.toLocaleString()} ₭</span></div>
+            <div class="r-row" style="color:#16a34a;">
+              <span class="r-label">ສ່ວນຫຼຸດອ້າຍນ້ອງ:</span>
+              <span class="r-val">-${discountPerPerson.toLocaleString()} ₭ / ຄົນ</span>
+            </div>
+            <div class="r-row">
+              <span class="r-label">ຄ່າຮຽນສຸດທິ:</span>
+              <span class="r-val" style="color:#2563eb;"><b>${netRatePerPerson.toLocaleString()} ₭ / ຄົນ</b></span>
+            </div>
+          ` : `
+            <div class="r-row"><span class="r-label">ຄ່າຮຽນ/ເດືອນ:</span><span class="r-val">${baseRate.toLocaleString()} ₭</span></div>
+          `}
+
+          <div class="line"></div>
+          
+          <div class="r-row" style="font-size: 12px;">
+            <b>ລວມຕ້ອງຊຳລະ (${totalPeopleCount} ຄົນ):</b>
+            <span class="r-val" style="font-size: 13px; color:#dc2626;">${totalForBill.toLocaleString()} LAK</span>
+          </div>
+          
+          <div class="line"></div>
+          <div class="center" style="margin-top: 4px; font-size: 9px; color:#64748b;">
+            ${totalPeopleCount > 1 ? `* ໄດ້ສ່ວນຫຼຸດອ້າຍນ້ອງເเหลือ ${netRatePerPerson.toLocaleString()} ₭/ຄົນ (${totalPeopleCount} ຄົນ)<br>` : ''}
+            ກະລຸນານຳສົ່ງໃບບິນນີ້ມາຊຳລະຄ່າຮຽນຢູ່ໂຮງຮຽນ ຫຼື ໂອນຜ່ານບັນຊີທະນາຄານ<br>
+            ຂອບໃຈຢ່າງຍິ່ງ!
+          </div>
+        </div>
+      `;
+    }
+
+    window.closePrintModal = () => {
+      document.getElementById('print-modal').style.display = 'none';
+    };
+  </script>
+</body>
+</html>

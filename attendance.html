@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ບັນທຶກ ແລະ ຕາຕະລາງປະຈຳເດືອນ - School System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans Lao', sans-serif; }
+<<<<<<< HEAD
+        .excel-grid th, .excel-grid td { border: 1px solid #cbd5e1; }
+=======
+        .excel-grid th, .excel-grid td { border: 1px solid #e2e8f0; }
+>>>>>>> f489a17e4c6a570fa83ccc3350c4e717525e7de8
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+<<<<<<< HEAD
+
+        /* ຕັ້ງຄ່າສຳລັບການພິມ: A4 ແນວຕັ້ງ - ເພີ່ມຂອບຊ້າຍຂວາໃຫ້ຫຍັບເຂົ້າຫຼາຍຂຶ້ນ ແລະ ຫຍໍ້ຖັນລາຍຊື່ */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 10mm 25mm; /* ເພີ່ມຂອບຊ້າຍ-ຂວາໃຫ້ຫຍັບເຂົ້າເລິກຂຶ້ນ ບໍ່ໃຫ້ຕິດຂອບເຈ້ຍ A4 */
+            }
+
+            body {
+                background-color: white !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+
+            /* ເຊື່ອງສ່ວນຄວບຄຸມ, ປຸ່ມ ແລະ ຕາຕະລາງບັນທຶກປະຈຳວັນ */
+            .bg-white.p-4.md\:p-6.rounded-3xl.shadow-sm.border,
+            .xl\:col-span-5,
+            .print-hide-area {
+                display: none !important;
+            }
+
+            /* ສະແດງຫົວຂໍ້ພິມສະເພາະເວລາປຣິນ */
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 8px;
+            }
+
+            .xl\:col-span-7 {
+                width: 100% !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: transparent !important;
+            }
+
+            table {
+                font-size: 7.5px !important;
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+
+            th, td {
+                padding: 2px 1px !important;
+                text-align: center !important;
+            }
+
+            /* ປັບຂະໜາດຖັນ ລ/ດ ໃຫ້ພໍດີ */
+            th:first-child, td:first-child {
+                width: 25px !important;
+                min-width: 25px !important;
+            }
+
+            /* ຫຍໍ້ຄວາມກວ້າງຖັນລາຍຊື່ລົງ ບໍ່ໃຫ້ເຫຼືອພື້ນທີ່ຫວ່າງຫຼາຍເກີນໄປ */
+            th:nth-child(2), td:nth-child(2) {
+                text-align: left !important;
+                padding-left: 4px !important;
+                width: 75px !important;
+                max-width: 75px !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .excel-grid th, .excel-grid td {
+                height: 18px !important;
+            }
+        }
+
+        .print-header {
+            display: none;
+        }
+=======
+>>>>>>> f489a17e4c6a570fa83ccc3350c4e717525e7de8
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen p-3 md:p-6">
+
+    <div class="max-w-7xl mx-auto space-y-4 md:space-y-6">
+        
+        <!-- Header Controls -->
+        <div class="bg-white p-4 md:p-6 rounded-3xl shadow-sm border border-slate-200/80 flex flex-col gap-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold text-slate-900 tracking-tight">📅 ລະບົບຈັດການ ແລະ ບັນທຶກການມາຮຽນ</h1>
+                    <p class="text-xs text-slate-500 mt-0.5">ຈັດການສະຖານະການມາຮຽນ ແລະ ຕາຕະລາງສະຫຼຸບປະຈຳເດືອນ</p>
+                </div>
+                <div class="flex items-center gap-2 self-start md:self-auto">
+                    <button onclick="window.print()" class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer">
+<<<<<<< HEAD
+                        🖨️ ພິມຕາຕະລາງສະຫຼຸບປະຈຳເດືອນ (A4)
+=======
+                        🖨️ ພິມລາຍງານ
+>>>>>>> f489a17e4c6a570fa83ccc3350c4e717525e7de8
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-slate-100">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">ວັນທີບັນທຶກ</label>
+                    <input type="date" id="attendance-date" class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 text-xs font-medium outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition" onchange="loadExistingAttendance()">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">ຊົ່ວໂມງຮຽນ / ຫ້ອງ</label>
+                    <select id="filter-room" class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 text-xs font-medium outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition" onchange="filterData()">
+                        <option value="">-- ທຸກຫ້ອງ --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">ເລືອກເດືອນ</label>
+                    <select id="select-month" class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 text-xs font-medium outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition" onchange="loadMonthlyGrid()">
+                        <option value="1">ມັງກອນ (1)</option>
+                        <option value="2">ກຸມພາ (2)</option>
+                        <option value="3">ມີນາ (3)</option>
+                        <option value="4">ເມສາ (4)</option>
+                        <option value="5">ພຶດສະພາ (5)</option>
+                        <option value="6">ມິຖຸນາ (6)</option>
+                        <option value="7">ກໍລະກົດ (7)</option>
+                        <option value="8">ສິງຫາ (8)</option>
+                        <option value="9">ກັນຍາ (9)</option>
+                        <option value="10">ຕຸລາ (10)</option>
+                        <option value="11">ພະຈິກ (11)</option>
+                        <option value="12">ທັນວາ (12)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">ປີ</label>
+                    <select id="select-year" class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/50 text-xs font-medium outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition" onchange="loadMonthlyGrid()">
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+            
+            <!-- ຝ່າຍຊ້າຍ: ຕາຕະລາງບັນທຶກປະຈຳວັນ -->
+            <div class="xl:col-span-5 bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col">
+                <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
+                    <h3 class="font-bold text-xs flex items-center gap-1.5">📝 ບັນທຶກສະຖານະປະຈຳວັນ</h3>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[11px] bg-slate-800 px-2.5 py-1 rounded-full text-slate-300 font-medium" id="total-students-label">ລວມ: 0 ຄົນ</span>
+                    </div>
+                </div>
+                
+                <!-- Quick Action Buttons -->
+                <div class="p-3 bg-slate-50/80 border-b border-slate-100 flex gap-2">
+                    <button onclick="resetAllStatus()" class="flex-1 bg-white text-slate-700 hover:bg-slate-100 font-semibold py-1.5 px-3 rounded-xl text-xs transition border border-slate-200 cursor-pointer">⚪ ມາປົກກະຕິທັງໝົດ (ຣີເຊັດ)</button>
+                    <button onclick="markAllStatus('absent')" class="flex-1 bg-rose-50 text-rose-700 hover:bg-rose-100 font-semibold py-1.5 px-3 rounded-xl text-xs transition border border-rose-200/50 cursor-pointer">❌ ຂາດທັງໝົດ</button>
+                </div>
+
+                <!-- Scrollable Student List -->
+                <div class="overflow-y-auto max-h-[420px] md:max-h-[500px] p-2">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-50 text-slate-400 text-[10px] uppercase sticky top-0 z-10">
+                            <tr>
+                                <th class="p-2.5 w-10 font-bold">ລ/ດ</th>
+                                <th class="p-2.5 font-bold">ລາຍຊື່ນັກຮຽນ</th>
+                                <th class="p-2.5 text-center w-28 font-bold">ສະຖານະ</th>
+                                <th class="p-2.5 w-24 font-bold">ໝາຍເຫດ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-tbody" class="divide-y divide-slate-100 text-xs">
+                            <tr>
+                                <td colspan="4" class="text-center p-8 text-slate-400">ກະລຸນາເລືອກຫ້ອງຮຽນ...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Save Button -->
+                <div class="p-3 border-t border-slate-100 bg-slate-50/50">
+                    <button onclick="saveAttendance()" class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold py-2.5 rounded-xl text-xs transition shadow-lg shadow-blue-600/20 cursor-pointer flex items-center justify-center gap-2">
+                        💾 ບັນທຶກຂໍ້ມູນ
+                    </button>
+                </div>
+            </div>
+
+            <!-- ຝ່າຍຂວາ: ຕາຕະລາງປະຈຳເດືອນ -->
+<<<<<<< HEAD
+            <div class="xl:col-span-7 bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col px-2 md:px-3.5 py-3">
+                
+                <!-- ຫົວຂໍ້ສະເພາະເວລາພິມ (Print Header) -->
+                <div class="print-header">
+                    <h2 id="print-title-text" style="font-size: 14px; font-weight: bold; text-align: center;">ຕາຕະລາງໝາຍຂາດ ປະຈຳເດືອນ... ຫ້ອງ...</h2>
+                </div>
+
+                <!-- ຕາຕະລາງສະຫຼຸບ -->
+                <div class="overflow-auto max-h-[440px] md:max-h-[520px] mt-1">
+=======
+            <div class="xl:col-span-7 bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col">
+                <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
+                    <h3 class="font-bold text-xs flex items-center gap-1.5">📊 ຕາຕະລາງສະຫຼຸບປະຈຳເດືອນ (ຈັນ - ສຸກ)</h3>
+                    <div class="flex items-center gap-2">
+                        <div class="text-[10px] text-slate-300 bg-slate-700/50 px-2.5 py-1 rounded-lg">ເລື່ອນເບິ່ງຂ້າງຂວາໄດ້ ➡️</div>
+                    </div>
+                </div>
+                <div class="overflow-auto max-h-[480px] md:max-h-[560px]">
+>>>>>>> f489a17e4c6a570fa83ccc3350c4e717525e7de8
+                    <table class="excel-grid w-full text-center border-collapse text-xs bg-white">
+                        <thead>
+                            <tr id="grid-header-days" class="bg-slate-100/80 text-slate-700 font-bold">
+                                <th class="p-2 w-10 sticky left-0 bg-slate-100 z-20 shadow-[1px_0_0_#e2e8f0]">ລ/ດ</th>
+                                <th class="p-2 w-32 text-left sticky left-10 bg-slate-100 z-20 shadow-[1px_0_0_#e2e8f0]">ລາຍຊື່</th>
+                            </tr>
+                            <tr id="grid-header-weekdays" class="bg-slate-50 text-slate-400 text-[10px]">
+                                <th class="sticky left-0 bg-slate-50 z-20 shadow-[1px_0_0_#e2e8f0]"></th>
+                                <th class="sticky left-10 bg-slate-50 z-20 shadow-[1px_0_0_#e2e8f0]"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="grid-tbody">
+                            <!-- ໂຫຼດຂໍ້ມູນຕາຕະລາງ -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Script Logic -->
+    <script type="module">
+        import { db } from './js/firebase-config.js';
+        import { collection, getDocs, setDoc, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        let studentsList = [];
+        let filteredStudents = [];
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const today = new Date();
+            document.getElementById('attendance-date').valueAsDate = today;
+            document.getElementById('select-month').value = today.getMonth() + 1;
+            document.getElementById('select-year').value = today.getFullYear();
+
+            const currentUserStr = localStorage.getItem('currentUser');
+            if (!currentUserStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+            const user = JSON.parse(currentUserStr);
+
+            await loadFilters(user);
+            await loadStudents();
+        });
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = 'bg-slate-900 text-white';
+            let icon = 'ℹ️';
+            
+            if (type === 'success') {
+                bgClass = 'bg-emerald-600 text-white';
+                icon = '✅';
+            } else if (type === 'error') {
+                bgClass = 'bg-rose-600 text-white';
+                icon = '❌';
+            } else if (type === 'warning') {
+                bgClass = 'bg-amber-500 text-white';
+                icon = '⚠️';
+            }
+
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold transform translate-y-2 opacity-0 transition-all duration-300 ${bgClass}`;
+            toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        async function loadFilters(user) {
+            try {
+                const roomSelect = document.getElementById('filter-room');
+                roomSelect.innerHTML = '';
+
+                const userRole = String(user.role || user.status || user.type || '').toLowerCase();
+                const isAdmin = userRole.includes('admin') || user.name === 'ຫ້າ';
+
+                const schedSnap = await getDocs(collection(db, "setting_schedules")); 
+                let assignedRooms = [];
+                let allRoomsSet = new Set();
+
+                const cleanStr = (str) => String(str || '').replace(/\s+/g, '').trim().toLowerCase();
+
+                schedSnap.forEach(d => {
+                    const data = d.data();
+                    const roomName = data.title || data.roomName || data.name || d.id;
+                    const teachersArr = data.teachers || [];
+
+                    if (roomName) allRoomsSet.add(roomName);
+
+                    if (!isAdmin) {
+                        const uName = cleanStr(user.name);
+                        const isMatch = teachersArr.some(t => {
+                            const tClean = cleanStr(t);
+                            return tClean === uName || tClean.includes(uName) || uName.includes(tClean);
+                        });
+
+                        if (isMatch && roomName && !assignedRooms.includes(roomName)) {
+                            assignedRooms.push(roomName);
+                        }
+                    }
+                });
+
+                if (!isAdmin) {
+                    if (assignedRooms.length > 0) {
+                        assignedRooms.forEach(roomName => {
+                            roomSelect.innerHTML += `<option value="${roomName}" selected>${roomName}</option>`;
+                        });
+                        roomSelect.disabled = true;
+                        roomSelect.classList.add('bg-slate-100', 'cursor-not-allowed', 'opacity-70');
+                    } else {
+                        roomSelect.innerHTML = `<option value="">-- ບໍ່ພົບຫ້ອງປະຈຳຕົວ --</option>`;
+                        roomSelect.disabled = true;
+                    }
+                } else {
+                    roomSelect.innerHTML = `<option value="">-- ທຸກຫ້ອງ (Admin Mode) --</option>`;
+                    allRoomsSet.forEach(roomTitle => {
+                        roomSelect.innerHTML += `<option value="${roomTitle}">${roomTitle}</option>`;
+                    });
+                    roomSelect.disabled = false;
+                    roomSelect.classList.remove('bg-slate-100', 'cursor-not-allowed', 'opacity-70');
+                }
+                
+                filterData();
+            } catch (err) {
+                console.error("Error loading filters:", err);
+            }
+        }
+
+        async function loadStudents() {
+            try {
+                const snap = await getDocs(collection(db, "students"));
+                studentsList = [];
+                snap.forEach(d => {
+                    studentsList.push({ id: d.id, ...d.data() });
+                });
+                filterData();
+            } catch (err) {
+                console.error("Error loading students:", err);
+            }
+        }
+
+        window.filterData = () => {
+            const roomFilter = document.getElementById('filter-room').value;
+            
+            filteredStudents = studentsList.filter(s => {
+                const room = s.room || s.schedule || s.class || '';
+                const studentStatus = String(s.status || '').toLowerCase().trim();
+                
+                if (studentStatus === 'paused' || studentStatus.includes('ພັກ') || studentStatus.includes('drop') || studentStatus.includes('inactive')) {
+                    return false; 
+                }
+
+                return roomFilter ? room === roomFilter : true;
+            });
+
+            document.getElementById('total-students-label').innerText = `ລວມ: ${filteredStudents.length} ຄົນ`;
+            renderLeftInputTable();
+            loadExistingAttendance();
+            loadMonthlyGrid();
+        }
+
+        function renderLeftInputTable() {
+            const tbody = document.getElementById('attendance-tbody');
+            if (filteredStudents.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-slate-400">ບໍ່ພົບຂໍ້ມູນນັກຮຽນໃນຫ້ອງນີ້</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredStudents.map((s, index) => {
+                const prefix = s.prefix || s.gender || s.title || '';
+                const rawName = s.name || s.studentName || 'ບໍ່ລະບຸຊື່';
+                const sName = prefix ? `${prefix} ${rawName}` : rawName;
+                return `
+                    <tr class="hover:bg-slate-50/80 transition" data-id="${s.id}">
+                        <td class="p-2.5 font-medium text-slate-500 text-xs">${index + 1}</td>
+                        <td class="p-2.5">
+                            <div class="font-semibold text-slate-800 text-xs">${sName}</div>
+                        </td>
+                        <td class="p-2.5 text-center">
+                            <div class="inline-flex rounded-lg p-0.5 bg-slate-100 gap-0.5 border border-slate-200/60">
+                                <button type="button" onclick="toggleStatus('${s.id}', 'absent')" class="px-2 py-0.5 rounded text-[10px] font-bold transition status-absent bg-white text-slate-600 border border-slate-200 shadow-sm cursor-pointer">ຂາດ</button>
+                                <button type="button" onclick="toggleStatus('${s.id}', 'late')" class="px-2 py-0.5 rounded text-[10px] font-bold transition status-late bg-white text-slate-600 border border-slate-200 shadow-sm cursor-pointer">ມາຊ້າ</button>
+                            </div>
+                        </td>
+                        <td class="p-2.5">
+                            <input type="text" placeholder="ໝາຍເຫດ..." class="note-input w-full px-2 py-0.5 rounded-lg border border-slate-200 text-[11px] outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50/50">
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.toggleStatus = (studentId, statusType) => {
+            const row = document.querySelector(`tr[data-id="${studentId}"]`);
+            if(!row) return;
+
+            const btnAbsent = row.querySelector('.status-absent');
+            const btnLate = row.querySelector('.status-late');
+
+            if(statusType === 'absent') {
+                if(btnAbsent.classList.contains('bg-rose-600')) {
+                    btnAbsent.className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-absent bg-white text-slate-600 border border-slate-200 shadow-sm cursor-pointer";
+                } else {
+                    btnAbsent.className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-absent bg-rose-600 text-white shadow-sm cursor-pointer";
+                    btnLate.className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-late bg-white text-slate-600 border border-slate-200 shadow-sm cursor-pointer";
+                }
+            } else if(statusType === 'late') {
+                if(btnLate.classList.contains('bg-amber-500')) {
+                    btnLate.className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-late bg-white text-slate-600 border border-slate-200 shadow-sm cursor-pointer";
+                } else {
+                    btnLate.className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-late bg-amber-500 text-white shadow-sm cursor-pointer";
+                    btnAbsent.className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-absent bg-white text-slate-600 border border-slate-200 shadow-sm cursor-pointer";
+                }
+            }
+        }
+
+        window.resetAllStatus = () => {
+            document.querySelectorAll('#attendance-tbody tr[data-id]').forEach(row => {
+                row.querySelector('.status-absent').className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-absent bg-white text-slate-600 border border-slate-200 shadow-sm cursor-pointer";
+                row.querySelector('.status-late').className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-late bg-white text-slate-600 border border-slate-200 shadow-sm cursor-pointer";
+            });
+        }
+
+        window.markAllStatus = (statusType) => {
+            document.querySelectorAll('#attendance-tbody tr[data-id]').forEach(row => {
+                const btnAbsent = row.querySelector('.status-absent');
+                const btnLate = row.querySelector('.status-late');
+                if(statusType === 'absent') {
+                    btnAbsent.className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-absent bg-rose-600 text-white shadow-sm cursor-pointer";
+                    btnLate.className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-late bg-white text-slate-600 border border-slate-200 shadow-sm cursor-pointer";
+                }
+            });
+        }
+
+        window.loadExistingAttendance = async () => {
+            const dateVal = document.getElementById('attendance-date').value;
+            if(!dateVal) return;
+
+            resetAllStatus();
+            document.querySelectorAll('#attendance-tbody .note-input').forEach(input => input.value = '');
+
+            try {
+                const docSnap = await getDoc(doc(db, "attendance", dateVal));
+                if (docSnap.exists()) {
+                    const records = docSnap.data().records || [];
+                    records.forEach(r => {
+                        const row = document.querySelector(`tr[data-id="${r.studentId}"]`);
+                        if (row) {
+                            const btnAbsent = row.querySelector('.status-absent');
+                            const btnLate = row.querySelector('.status-late');
+                            const noteInput = row.querySelector('.note-input');
+                            noteInput.value = r.note || '';
+
+                            if(r.status === 'absent') {
+                                btnAbsent.className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-absent bg-rose-600 text-white shadow-sm cursor-pointer";
+                            } else if(r.status === 'late') {
+                                btnLate.className = "px-2 py-0.5 rounded text-[10px] font-bold transition status-late bg-amber-500 text-white shadow-sm cursor-pointer";
+                            }
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error("Error loading attendance:", err);
+            }
+        }
+
+        window.saveAttendance = async () => {
+            const dateVal = document.getElementById('attendance-date').value;
+            if(!dateVal) {
+                showToast("ກະລຸນາເລືອກວັນທີ!", "warning");
+                return;
+            }
+
+            const records = [];
+            document.querySelectorAll('#attendance-tbody tr[data-id]').forEach(row => {
+                const sId = row.getAttribute('data-id');
+                const btnAbsent = row.querySelector('.status-absent');
+                const btnLate = row.querySelector('.status-late');
+                const note = row.querySelector('.note-input').value.trim();
+                
+                let status = 'present';
+                if(btnAbsent.classList.contains('bg-rose-600')) {
+                    status = 'absent';
+                } else if(btnLate.classList.contains('bg-amber-500')) {
+                    status = 'late';
+                }
+
+                if (status !== 'present' || note !== '') {
+                    records.push({ studentId: sId, status, note });
+                }
+            });
+
+            try {
+                const docRef = doc(db, "attendance", dateVal);
+
+                if (records.length === 0) {
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        await deleteDoc(docRef);
+                    }
+                    showToast("ບໍ່ມີຂໍ້ມູນຜິດປົກກະຕິ ລະບົບໄດ້ລຶບ/ຣີເຊັດຂໍ້ມູນອອກຈາກ Database ໃຫ້ແລ້ວ!", "success");
+                } else {
+                    await setDoc(docRef, {
+                        date: dateVal,
+                        records,
+                        updatedAt: new Date()
+                    });
+                    showToast("ບັນທຶກຂໍ້ມູນສຳເລັດແລ້ວ!", "success");
+                }
+                loadMonthlyGrid();
+            } catch (err) {
+                showToast("ເກີດຂໍ້ຜິດພາດ: " + err.message, "error");
+            }
+        }
+
+        window.loadMonthlyGrid = async () => {
+            const year = parseInt(document.getElementById('select-year').value, 10);
+<<<<<<< HEAD
+            const monthSelect = document.getElementById('select-month');
+            const month = parseInt(monthSelect.value, 10);
+            const monthName = monthSelect.options[monthSelect.selectedIndex].text.split(' ')[0];
+            
+            const roomVal = document.getElementById('filter-room').value || 'ທຸກຫ້ອງ';
+
+            const titleString = `ຕາຕະລາງໝາຍຂາດ ປະຈຳເດືອນ ${monthName} (${month}/${year}) - ຫ້ອງ: ${roomVal}`;
+            document.getElementById('print-title-text').innerText = titleString;
+
+=======
+            const month = parseInt(document.getElementById('select-month').value, 10);
+            
+>>>>>>> f489a17e4c6a570fa83ccc3350c4e717525e7de8
+            const daysInMonth = new Date(year, month, 0).getDate();
+            const weekdaysChar = ['ອາ', 'ຈ', 'ອ', 'ພ', 'ພຫ', 'ສຸ', 'ສ'];
+
+            let workingDays = [];
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateObj = new Date(year, month - 1, d);
+                const dayOfWeek = dateObj.getDay();
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                    workingDays.push({ dayNum: d, char: weekdaysChar[dayOfWeek] });
+                }
+            }
+
+<<<<<<< HEAD
+            let daysHtml = `<th class="p-1.5 w-[25px] text-[9px] font-bold">ລ/ດ</th><th class="p-1.5 text-left text-[9px] font-bold">ລາຍຊື່</th>`;
+            let weekdaysHtml = `<th class="text-[8px]"></th><th class="text-[8px]"></th>`;
+
+            workingDays.forEach(w => {
+                daysHtml += `<th class="p-0.5 w-5 min-w-[18px] text-[9px]">${w.dayNum}</th>`;
+                weekdaysHtml += `<th class="p-0 text-[7px] text-slate-400">${w.char}</th>`;
+            });
+
+            daysHtml += `<th class="p-1 bg-emerald-50 text-emerald-800 font-bold w-7 text-[9px]">ມາ</th><th class="p-1 bg-rose-50 text-rose-800 font-bold w-7 text-[9px]">ຂາດ</th>`;
+            weekdaysHtml += `<th class="bg-emerald-50/50 text-[7px]">ມາ</th><th class="bg-rose-50/50 text-[7px]">ຂາດ</th>`;
+=======
+            let daysHtml = `<th class="p-2 w-10 sticky left-0 bg-slate-100 z-20 shadow-[1px_0_0_#e2e8f0]">ລ/ດ</th><th class="p-2 w-32 text-left sticky left-10 bg-slate-100 z-20 shadow-[1px_0_0_#e2e8f0]">ລາຍຊື່</th>`;
+            let weekdaysHtml = `<th class="sticky left-0 bg-slate-50 z-20 shadow-[1px_0_0_#e2e8f0]"></th><th class="sticky left-10 bg-slate-50 z-20 shadow-[1px_0_0_#e2e8f0]"></th>`;
+
+            workingDays.forEach(w => {
+                daysHtml += `<th class="p-1 w-8 min-w-[30px] text-[11px]">${w.dayNum}</th>`;
+                weekdaysHtml += `<th class="p-0.5 text-[9px] text-slate-400">${w.char}</th>`;
+            });
+
+            daysHtml += `<th class="p-2 bg-emerald-50 text-emerald-800 font-bold w-12">ມາ</th><th class="p-2 bg-rose-50 text-rose-800 font-bold w-12">ຂາດ</th>`;
+            weekdaysHtml += `<th class="bg-emerald-50/50 text-[9px]">ມາ</th><th class="bg-rose-50/50 text-[9px]">ຂາດ</th>`;
+>>>>>>> f489a17e4c6a570fa83ccc3350c4e717525e7de8
+
+            document.getElementById('grid-header-days').innerHTML = daysHtml;
+            document.getElementById('grid-header-weekdays').innerHTML = weekdaysHtml;
+
+            let monthlyRecords = {}; 
+            try {
+                const querySnap = await getDocs(collection(db, "attendance"));
+                querySnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const dateStr = data.date; 
+                    if(dateStr) {
+                        const parts = dateStr.split('-');
+                        const docYear = parseInt(parts[0], 10);
+                        const docMonth = parseInt(parts[1], 10);
+                        const docDay = parseInt(parts[2], 10);
+
+                        if(docYear === year && docMonth === month) {
+                            const records = data.records || [];
+                            records.forEach(r => {
+                                if(!monthlyRecords[r.studentId]) monthlyRecords[r.studentId] = {};
+                                monthlyRecords[r.studentId][docDay] = r.status;
+                            });
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error("Error loading monthly summary:", e);
+            }
+
+            const tbody = document.getElementById('grid-tbody');
+            if (filteredStudents.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${workingDays.length + 4}" class="p-8 text-slate-400">ບໍ່ພົບຂໍ້ມູນນັກຮຽນ</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredStudents.map((s, index) => {
+                const prefix = s.prefix || s.gender || s.title || '';
+                const rawName = s.name || s.studentName || 'ບໍ່ລະບຸຊື່';
+                const sName = prefix ? `${prefix} ${rawName}` : rawName;
+
+                let rowHtml = `
+                    <tr class="hover:bg-slate-50/80 transition">
+<<<<<<< HEAD
+                        <td class="p-1 font-medium text-[9px]">${index + 1}</td>
+                        <td class="p-1 text-left font-semibold text-slate-900 text-[9px] truncate max-w-[75px]" title="${sName}">${sName}</td>
+=======
+                        <td class="p-2 font-medium sticky left-0 bg-white z-10 text-xs shadow-[1px_0_0_#e2e8f0]">${index + 1}</td>
+                        <td class="p-2 text-left font-semibold text-slate-900 sticky left-10 bg-white z-10 truncate max-w-[140px] text-xs shadow-[1px_0_0_#e2e8f0]" title="${sName}">${sName}</td>
+>>>>>>> f489a17e4c6a570fa83ccc3350c4e717525e7de8
+                `;
+
+                let totalPresent = 0;
+                let totalAbsent = 0;
+
+                workingDays.forEach(w => {
+                    const status = monthlyRecords[s.id] && monthlyRecords[s.id][w.dayNum] ? monthlyRecords[s.id][w.dayNum] : 'present';
+                    
+                    let displayChar = '';
+                    let cellBg = '';
+
+                    if (status === 'absent') {
+                        displayChar = '❌';
+                        cellBg = 'bg-rose-50/60 text-rose-600 font-bold';
+                        totalAbsent++;
+                    } else if (status === 'late') {
+                        displayChar = '⚠️';
+                        cellBg = 'bg-amber-50/60 text-amber-600 font-bold';
+                        totalPresent++;
+                    } else {
+                        totalPresent++;
+                    }
+
+<<<<<<< HEAD
+                    rowHtml += `<td class="p-0 h-5 text-[9px] ${cellBg}">${displayChar}</td>`;
+                });
+
+                rowHtml += `
+                    <td class="p-1 font-bold text-emerald-700 bg-emerald-50/30 text-[9px]">${totalPresent}</td>
+                    <td class="p-1 font-bold text-rose-700 bg-rose-50/30 text-[9px]">${totalAbsent}</td>
+=======
+                    rowHtml += `<td class="p-0.5 h-8 text-[11px] ${cellBg}">${displayChar}</td>`;
+                });
+
+                rowHtml += `
+                    <td class="p-2 font-bold text-emerald-700 bg-emerald-50/30 text-xs">${totalPresent}</td>
+                    <td class="p-2 font-bold text-rose-700 bg-rose-50/30 text-xs">${totalAbsent}</td>
+>>>>>>> f489a17e4c6a570fa83ccc3350c4e717525e7de8
+                `;
+
+                rowHtml += `</tr>`;
+                return rowHtml;
+            }).join('');
+        }
+    </script>
+</body>
+</html>

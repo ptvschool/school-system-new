@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ໜ້າຈ່າຍເງິນເດືອນອາຈານ & Realtime Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f1f5f9;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #e0e7ff;
+      --success: #10b981;
+      --success-hover: #059669;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --border-radius: 14px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    * { box-sizing: border-box; font-family: 'Noto Sans Lao', sans-serif; margin: 0; padding: 0; }
+    body { background-color: var(--bg-main); color: var(--text-main); padding: 12px; font-size: 13px; line-height: 1.5; }
+    .container { max-width: 1300px; margin: 0 auto; }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .top-grid { grid-template-columns: 1fr; }
+    }
+
+    .pay-card, .realtime-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid #e2e8f0;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-refresh {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-refresh:hover { background: #c7d2fe; }
+
+    .form-grid-top {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 11px; font-weight: 600; color: var(--text-sub); }
+    .form-control {
+      padding: 7px 9px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+      background-color: #ffffff;
+      width: 100%;
+    }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); }
+
+    .finance-summary-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .finance-summary-box h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+    }
+    
+    .teacher-payout-list {
+      background: #fff;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 8px;
+      margin: 8px 0;
+      max-height: 230px;
+      overflow-y: auto;
+      font-size: 11px;
+    }
+
+    .teacher-item-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .teacher-item-card:last-child { margin-bottom: 0; }
+    
+    .teacher-left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+    .teacher-head { font-weight: 700; color: #1e293b; font-size: 12px; }
+    
+    .teacher-right-col {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      font-size: 11px;
+    }
+    .teacher-sub { font-size: 11px; color: var(--text-sub); }
+    .teacher-sub b { color: #0284c7; }
+    .teacher-sub span.disc { color: #d97706; }
+
+    .badge-status {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .badge-status.paid { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .badge-status.unpaid { background: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+    .btn-pay-action {
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: background 0.2s;
+    }
+    .btn-pay-action:hover { background: var(--success-hover); }
+
+    .fin-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    .fin-row.bold { font-weight: 700; }
+    .fin-row.expected { color: #0369a1; background: #e0f2fe; padding: 6px; border-radius: 6px; font-weight: 700; }
+    .fin-row.sibling-global { color: #b45309; background: #fef3c7; padding: 6px; border-radius: 6px; margin-top: 4px; font-weight: 600; }
+    .fin-row.remaining { color: #0f766e; background: #ccfbf1; padding: 8px; border-radius: 8px; font-weight: 700; font-size: 13px; border: 1.5px solid #5eead4; }
+    .fin-row.owner { color: #854d0e; background: #fffbeb; padding: 6px; border-radius: 6px; margin-top: 6px; border: 1px solid #fef3c7; align-items: center; }
+    .fin-row.net { color: #166534; background: #dcfce7; padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 700; margin-top: 6px; border: 1px solid #86efac; }
+
+    .owner-pay-container { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1; }
+    .btn-owner-pay {
+      width: 100%;
+      background: #e2e8f0;
+      color: #94a3b8;
+      border: 1px solid #cbd5e1;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: not-allowed;
+    }
+    .btn-owner-pay.active {
+      background: #f59e0b;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+    .btn-owner-pay.active:hover { background: #d97706; }
+    .btn-owner-pay.completed { background: #10b981; color: #ffffff; border: none; cursor: default; }
+
+    .detail-box, .sibling-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .detail-box h3 { font-size: 11px; font-weight: 700; margin-bottom: 4px; color: #334155; }
+
+    .hours-table, .realtime-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .hours-table th, .hours-table td,
+    .realtime-table th, .realtime-table td { padding: 6px 4px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+    .hours-table th, .realtime-table th { color: var(--text-sub); font-weight: 600; background: #f1f5f9; position: sticky; top: 0; }
+
+    .table-container { overflow-x: auto; max-height: 140px; border-radius: 6px; }
+
+    .sibling-box { background: #fffbeb; border-color: #fde68a; }
+    .sibling-box h4 { font-size: 11px; font-weight: 700; color: #b45309; margin-bottom: 4px; }
+    .sibling-list { color: #78350f; list-style: none; font-size: 11px; }
+
+    .calc-summary {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .calc-row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; }
+    .calc-row.total {
+      border-top: 1px dashed #86efac;
+      padding-top: 6px;
+      margin-top: 4px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #15803d;
+    }
+
+    .btn-pay {
+      width: 100%;
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    }
+    .btn-pay:hover { background: var(--success-hover); }
+
+    .realtime-card { display: flex; flex-direction: column; min-height: 650px; }
+    .list-wrapper { overflow-y: auto; flex: 1; border: 1px solid #e2e8f0; border-radius: 8px; max-height: 280px; }
+
+    .btn-reprint {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 3px 6px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-reprint:hover { background: var(--primary); color: #fff; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      max-width: 340px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    
+    /* 🖨️ ຈັດຊັ້ນໃບບິນ 58mm ໃໝ່ ໃຫ້ງາມ ແລະ ເປັນລະບຽບ */
+    #receipt-58mm {
+      width: 58mm;
+      margin: 0 auto;
+      padding: 6px 2px;
+      font-family: 'Courier New', Courier, monospace, 'Noto Sans Lao';
+      color: #000;
+      background: #fff;
+      font-size: 10px;
+      line-height: 1.3;
+    }
+    .r-header { text-align: center; margin-bottom: 6px; }
+    .r-title { font-size: 13px; font-weight: bold; letter-spacing: 0.5px; }
+    .r-sub { font-size: 9px; margin-top: 2px; font-weight: 600; }
+    .r-divider { border-bottom: 1px dashed #333; margin: 5px 0; }
+    
+    .r-info-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 4px;
+      font-size: 10px;
+    }
+    .r-info-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .r-table { width: 100%; border-collapse: collapse; font-size: 10px; margin: 4px 0; }
+    .r-table th { border-bottom: 1px solid #000; padding-bottom: 2px; text-align: left; font-size: 9px; }
+    .r-table th.num, .r-table td.num { text-align: right; }
+    .r-table td { padding: 2px 0; vertical-align: top; }
+
+    .r-summary-box {
+      margin-top: 4px;
+      font-size: 10px;
+    }
+    .r-summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+    .r-summary-row.sub { color: #333; font-size: 9.5px; }
+
+    .r-total-box { 
+      margin-top: 5px; 
+      padding-top: 4px;
+      border-top: 1px solid #000;
+      font-size: 11px; 
+      font-weight: bold; 
+      display: flex; 
+      justify-content: space-between;
+    }
+
+    .r-footer { text-align: center; margin-top: 10px; font-size: 9px; }
+    .r-sign-box {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      font-size: 8.5px;
+      text-align: center;
+    }
+
+    /* Custom Confirm Modal Styling */
+    .confirm-modal-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 14px;
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+    }
+    .confirm-icon { font-size: 32px; margin-bottom: 8px; }
+    .confirm-title { font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 6px; }
+    .confirm-desc { font-size: 12px; color: #64748b; margin-bottom: 16px; }
+
+    @media print {
+      body * { visibility: hidden; }
+      #receipt-58mm, #receipt-58mm * { visibility: visible; }
+      #receipt-58mm {
+        position: absolute;
+        left: 0; top: 0;
+        width: 58mm;
+      }
+      .modal-overlay { background: transparent; }
+      .modal-content { box-shadow: none; padding: 0; }
+      .no-print { display: none !important; }
+      @page { size: 58mm auto; margin: 0; }
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="top-grid">
+      
+      <!-- 1. Form ຈ່າຍເງິນ -->
+      <div class="pay-card">
+        <div class="card-title">
+          <span>💳 ລະບົບຄິດໄລ່ເງິນເດືອນ</span>
+          <button class="btn-refresh" id="btn-reload">🔄 ດຶງຂໍ້ມູນໃໝ່</button>
+        </div>
+
+        <div class="form-grid-top">
+          <div class="form-group">
+            <label>📅 ວັນທີຈ່າຍ:</label>
+            <input type="date" id="pay-date" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>📆 ປະຈຳເດືອນ:</label>
+            <input type="month" id="salary-month" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-grid-top">
+          <div class="form-group">
+            <label>🧾 ເລກບິນ:</label>
+            <input type="text" id="bill-no" class="form-control" readonly style="background:#f1f5f9;">
+          </div>
+          <div class="form-group">
+            <label>👨‍🏫 ເລືອກອາຈານ:</label>
+            <select id="teacher-select" class="form-control">
+              <option value="">-- ກຳລັງໂຫຼດ... --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label>💵 ຕັ້ງຄ່າຄ່າຮຽນ/ຄົນ (ໃຊ້ຄິດໄລ່ຍອດລວມ):</label>
+          <select id="tuition-select" class="form-control">
+            <option value="0">-- ກຳລັງໂຫຼດ... --</option>
+          </select>
+        </div>
+
+        <div class="detail-box">
+          <h3>🕒 ຈຳນວນນັກຮຽນແຍກຕາມຮອບ:</h3>
+          <div class="table-container">
+            <table class="hours-table">
+              <thead>
+                <tr>
+                  <th>ຮອບຮຽນ</th>
+                  <th>ຈຳນວນ</th>
+                  <th>ລາຍຮັບ (ກີບ)</th>
+                </tr>
+              </thead>
+              <tbody id="hours-tbody">
+                <tr><td colspan="3" style="text-align:center; color:#94a3b8;">ກະລຸນາເລືອກອາຈານ...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="sibling-box">
+          <h4>👨‍👩‍👧‍👦 ສ່ວນຫຼຸດອ້າຍນ້ອງ (-10,000 ₭/ຄົນ):</h4>
+          <div id="sibling-list" class="sibling-list">
+            <div style="color:#92400e;">ກະລຸນາເລືອກອາຈານ...</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+          <div class="form-group">
+            <label style="color: var(--warning);">🎁 ສ່ວນຫຼຸດອ້າຍນ້ອງ:</label>
+            <input type="number" id="discount-cost" class="form-control" value="0" style="border-color: #fcd34d;">
+          </div>
+          <div class="form-group">
+            <label>🎨 ຄ່າອຸປະກອນ:</label>
+            <input type="number" id="material-cost" class="form-control" value="0">
+          </div>
+        </div>
+
+        <div class="calc-summary">
+          <div class="calc-row">
+            <span>ນັກຮຽນລວມ: <b id="txt-total-students">0 ຄົນ</b></span>
+            <span>ລາຍຮັບເຕັມ: <b id="txt-gross-tuition">0 ₭</b></span>
+          </div>
+          <div class="calc-row">
+            <span>ສ່ວນຫຼຸດອ້າຍນ້ອງ: <b id="txt-discount" style="color:var(--warning);">-0 ₭</b></span>
+            <span>ສ່ວນແບ່ງ (<b id="txt-share-percent" style="color:var(--primary);">0%</b>): <b id="txt-teacher-share" style="color:var(--primary);">0 ₭</b></span>
+          </div>
+          <div class="calc-row total">
+            <span>💰 ຍອດຈ່າຍເງິນເດືອນສຸດທິ:</span>
+            <span id="txt-grand-total">0 ₭</span>
+          </div>
+        </div>
+
+        <button class="btn-pay" id="btn-print-pay">
+          🖨️ ບັນທຶກ & ເບິ່ງໃບບິນ 58mm
+        </button>
+      </div>
+
+      <!-- 2. Realtime Dashboard -->
+      <div class="realtime-card">
+        
+        <div class="finance-summary-box">
+          <h3>📊 ສະຫຼຸບລາຍຮັບ-ລາຍຈ່າຍ & ສ່ວນແບ່ງເຈົ້າຂອງ</h3>
+
+          <div class="fin-row expected">
+            <span>📈 ລາຍໄດ້ຄາດຈະໄດ້ຮັບທັງໝົດ:</span>
+            <b id="fin-expected-income">0 ₭</b>
+          </div>
+
+          <div class="fin-row sibling-global">
+            <span>🎁 ສ່ວນຫຼຸດອ້າຍນ້ອງ (ລວມທັງໝົດ):</span>
+            <b id="fin-total-sibling-discount">-0 ₭</b>
+          </div>
+
+          <!-- ລາຍການອາຈານ -->
+          <div class="teacher-payout-list" id="fin-teacher-list">
+            <div style="color:#94a3b8; text-align:center;">ກຳລັງໂຫຼດຂໍ້ມູນອາຈານ...</div>
+          </div>
+
+          <div class="fin-row" style="display:none;">
+            <span>📥 ລາຍຮັບທີ່ເກັບໄດ້ແລ້ວ:</span>
+            <b id="fin-total-collected" style="color:#16a34a;">0 ₭</b>
+          </div>
+
+          <div class="fin-row bold" style="color:#dc2626;">
+            <span>💸 ລວມຫັກຈ່າຍອາຈານທັງໝົດ:</span>
+            <span id="fin-total-teacher-payout">0 ₭</span>
+          </div>
+
+          <div class="fin-row remaining">
+            <span>📊 ຍອດເຫຼືອຈາກການຈ່າຍເງິນຄູທັງໝົດ:</span>
+            <b id="fin-remaining-after-teachers">0 ₭</b>
+          </div>
+
+          <div class="fin-row owner">
+            <span>👑 ສ່ວນແບ່ງເຈົ້າຂອງ (30% ຂອງຍອດເຫຼືອ):</span>
+            <b id="fin-owner-share" style="color:#d97706; font-size:13px;">0 ₭</b>
+          </div>
+
+          <div class="fin-row net">
+            <span>✨ ຍອດເຫຼືອສຸດທິ (ກຳໄລເຂົ້າຄັງ):</span>
+            <span id="fin-net-profit">0 ₭</b>
+          </div>
+
+          <div class="owner-pay-container">
+            <button id="btn-owner-pay" class="btn-owner-pay" disabled>
+              🔒 ຍັງຈ່າຍອາຈານບໍ່ຄົບ (ບໍ່ສາມາດຈ່າຍເຈົ້າຂອງໄດ້)
+            </button>
+          </div>
+        </div>
+
+        <div class="card-title">
+          <span>⚡ ປະວັດການຈ່າຍເງິນ (Realtime)</span>
+          <span style="font-size:10px; color:var(--success); font-weight:600;">● Live Updated</span>
+        </div>
+
+        <div class="list-wrapper">
+          <table class="realtime-table">
+            <thead>
+              <tr>
+                <th>ເລກບິນ / ວັນທີ</th>
+                <th>ອາຈານ / ເຈົ້າຂອງ</th>
+                <th>ຍອດຈ່າຍ</th>
+                <th style="text-align:center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="realtime-tbody">
+              <tr><td colspan="4" style="text-align:center; color:#94a3b8; padding:12px;">⏳ ກຳລັງໂຫຼດຂໍ້ມູນ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal ຢືນຢັນການຈ່າຍໃຫ້ເຈົ້າຂອງ -->
+  <div class="modal-overlay" id="confirm-owner-modal">
+    <div class="confirm-modal-box">
+      <div class="confirm-icon">👑</div>
+      <div class="confirm-title">ຢືນຢັນການຈ່າຍສ່ວນແບ່ງເຈົ້າຂອງ</div>
+      <div class="confirm-desc" id="confirm-owner-desc">ຕ້ອງການຈ່າຍສ່ວນແບ່ງເຈົ້າຂອງ 30% ແທ້ບໍ?</div>
+      <div style="display: flex; gap: 8px;">
+        <button id="btn-confirm-owner-yes" style="flex:1; background:var(--success); color:#fff; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">✅ ຢືນຢັນຈ່າຍ</button>
+        <button onclick="closeConfirmModal()" style="flex:1; background:#e2e8f0; color:#334155; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer;">❌ ຍົກເລີກ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal ສໍາລັບສະແດງບິນ 58mm ກ່ອນພິມ -->
+  <div class="modal-overlay" id="receipt-modal">
+    <div class="modal-content">
+      <div id="receipt-58mm">
+        <div class="r-header">
+          <div class="r-title">🌟 ໂຮງຮຽນ ສອນເພີ່ມ 🌟</div>
+          <div class="r-sub" id="r-bill-type">ໃບຈ່າຍເງິນເດືອນອາຈານ (PAYSLIP)</div>
+        </div>
+        
+        <div class="r-divider"></div>
+        
+        <div class="r-info-grid">
+          <div class="r-info-row"><span>ເລກບິນ:</span> <b id="r-bill-no"></b></div>
+          <div class="r-info-row"><span>ວັນທີ:</span> <span id="r-date"></span></div>
+          <div class="r-info-row"><span>ປະຈຳເດືອນ:</span> <span id="r-salary-month"></span></div>
+          <div class="r-info-row"><span>ຜູ້ຮັບເງິນ:</span> <b id="r-teacher-name" style="color:#111;"></b></div>
+        </div>
+
+        <div class="r-divider"></div>
+        
+        <!-- ຕารางລາຍລະອຽດ -->
+        <table class="r-table" id="r-main-table">
+          <thead>
+            <tr>
+              <th>ລາຍການ / ຮອບຮຽນ</th>
+              <th class="num">ຈຳນວນ</th>
+              <th class="num">ລວມ (₭)</th>
+            </tr>
+          </thead>
+          <tbody id="r-items-body"></tbody>
+        </table>
+
+        <div class="r-divider"></div>
+
+        <!-- ຜົນລວມຍ່ອຍ -->
+        <div class="r-summary-box" id="r-summary-box">
+          <div class="r-summary-row sub"><span>ຄ່າຮຽນລວມ:</span> <span id="r-gross-tuition">0</span></div>
+          <div class="r-summary-row sub"><span>ສ່ວນຫຼຸດອ້າຍນ້ອງ:</span> <span id="r-discount" style="color:#b45309;">-0</span></div>
+          <div class="r-summary-row sub"><span>ຍອດຫຼັງຫັກສ່ວນຫຼຸດ:</span> <span id="r-tuition">0</span></div>
+          <div class="r-summary-row sub"><span>ສ່ວນແບ່ງຄູ (<span id="r-share-percent">0%</span>):</span> <span id="r-share">0</span></div>
+          <div class="r-summary-row sub"><span>ຄ່າອຸປະກອນເສີມ:</span> <span id="r-material">0</span></div>
+        </div>
+
+        <div class="r-total-box">
+          <span>💰 ຍອດຈ່າຍສຸດທິ:</span>
+          <span id="r-grand-total">0 ₭</span>
+        </div>
+
+        <div class="r-divider"></div>
+        
+        <div class="r-footer">
+          <p>🙏 ຂອບໃຈທີ່ຮ່ວມງານກັນ!</p>
+        </div>
+
+        <div class="r-sign-box">
+          <div>ຜູ້ຈ່າຍເງິນ<br><br>...................</div>
+          <div>ຜູ້ຮັບເງິນ<br><br>...................</div>
+        </div>
+      </div>
+
+      <div class="no-print" style="margin-top: 12px; display: flex; gap: 8px;">
+        <button onclick="window.print()" style="flex:1; background:var(--success); color:#fff; border:none; padding:8px; border-radius:6px; font-weight:700; cursor:pointer;">🖨️ ພິມບິນ</button>
+        <button onclick="closeReceiptModal()" style="flex:1; background:#e2e8f0; color:#334155; border:none; padding:8px; border-radius:6px; font-weight:700; cursor:pointer;">❌ ປິດ</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db } from './js/firebase-config.js';
+    import { collection, getDocs, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    let teachersList = [];
+    let currentSlots = [];
+    let currentSharePercent = 50;
+    let currentSiblingDetails = [];
+    let paymentHistoryList = [];
+    let totalCollectedIncome = 0;
+    let globalTeacherStats = {}; 
+    let isOwnerPaid = false;
+    let calculatedOwnerShare = 0;
+    let expectedTotalGlobal = 0; 
+    const SIBLING_DISCOUNT_PER_HEAD = 10000;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('pay-date').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('salary-month').value = new Date().toISOString().slice(0, 7);
+      generateBillNo();
+
+      loadInitialSettings();
+      listenRealtimePayments();
+
+      document.getElementById('btn-reload').addEventListener('click', loadInitialSettings);
+      document.getElementById('teacher-select').addEventListener('change', onTeacherChange);
+      document.getElementById('salary-month').addEventListener('change', loadInitialSettings);
+      document.getElementById('tuition-select').addEventListener('change', () => {
+        calculateTotal();
+        loadOverallStudentIncome();
+      });
+      document.getElementById('discount-cost').addEventListener('input', calculateTotal);
+      document.getElementById('material-cost').addEventListener('input', calculateTotal);
+      document.getElementById('btn-print-pay').addEventListener('click', processPaymentAndPrint);
+      
+      document.getElementById('btn-owner-pay').addEventListener('click', () => {
+        if (isOwnerPaid) {
+          alert("❌ ເດືອນນີ້ໄດ້ຈ່າຍໃຫ້ເຈົ້າຂອງຮຽບຮ້ອຍແລ້ວ!");
+          return;
+        }
+        if (calculatedOwnerShare <= 0) {
+          alert("❌ ບໍ່ມີຍອດເງິນສ່ວນແບ່ງເຈົ້າຂອງ!");
+          return;
+        }
+        document.getElementById('confirm-owner-desc').innerText = `ຕ້ອງການຈ່າຍສ່ວນແບ່ງເຈົ້າຂອງ 30% ຈຳນວນ: ${calculatedOwnerShare.toLocaleString()} ₭ ແທ້ບໍ?`;
+        document.getElementById('confirm-owner-modal').style.display = 'flex';
+      });
+
+      document.getElementById('btn-confirm-owner-yes').addEventListener('click', () => {
+        closeConfirmModal();
+        processOwnerPayment();
+      });
+    });
+
+    window.closeReceiptModal = function() {
+      document.getElementById('receipt-modal').style.display = 'none';
+    }
+
+    window.closeConfirmModal = function() {
+      document.getElementById('confirm-owner-modal').style.display = 'none';
+    }
+
+    function generateBillNo() {
+      const rand = Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('bill-no').value = `PAY-${Date.now().toString().slice(-4)}${rand}`;
+    }
+
+    async function loadInitialSettings() {
+      await Promise.all([
+        loadTeachersFromSettings(),
+        loadTuitionFromSettings()
+      ]);
+      loadOverallStudentIncome();
+    }
+
+    async function loadTeachersFromSettings() {
+      const select = document.getElementById('teacher-select');
+      select.innerHTML = '<option value="">-- ກຳລັງໂຫຼດ... --</option>';
+
+      try {
+        const snap = await getDocs(collection(db, "setting_teachers"));
+        teachersList = [];
+        snap.forEach(doc => teachersList.push({ id: doc.id, ...doc.data() }));
+
+        select.innerHTML = '<option value="">-- ເລືອກອາຈານ --</option>';
+        teachersList.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.name; 
+          opt.innerText = `${t.name} (${t.percent || 50}%)`;
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        console.error("Error loading teachers:", err);
+      }
+    }
+
+    async function loadTuitionFromSettings() {
+      const select = document.getElementById('tuition-select');
+      try {
+        const snap = await getDocs(collection(db, "setting_tuition"));
+        select.innerHTML = '';
+        snap.forEach(doc => {
+          const data = doc.data();
+          const price = Number(data.price || 0);
+          const opt = document.createElement('option');
+          opt.value = price;
+          opt.innerText = `${price.toLocaleString()} ₭/ຄົນ`;
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        console.error("Error loading tuition:", err);
+      }
+    }
+
+    async function loadOverallStudentIncome() {
+      try {
+        const studentSnap = await getDocs(collection(db, "students"));
+        const rate = Number(document.getElementById('tuition-select').value) || 0;
+        
+        let totalStudentCount = studentSnap.size;
+        let paidStudentCount = 0;
+        globalTeacherStats = {};
+
+        teachersList.forEach(t => {
+          globalTeacherStats[t.name] = { students: 0, discountAmount: 0, siblingCount: 0, grossAmount: 0, totalAmount: 0 };
+        });
+
+        const globalFamilyCounts = {};
+        studentSnap.forEach(doc => {
+          const s = doc.data();
+          const fId = s.familyId || s.familyCode || s.houseId;
+          if (fId) globalFamilyCounts[fId] = (globalFamilyCounts[fId] || 0) + 1;
+        });
+
+        let totalGlobalSiblingDiscount = 0;
+
+        studentSnap.forEach(doc => {
+          const s = doc.data();
+          const tName = s.teacher || s.teacherName || s.teacher_name || s.selectTeacher || 'ບໍ່ໄດ້ລະບຸ';
+          const fId = s.familyId || s.familyCode || s.houseId;
+
+          if (!globalTeacherStats[tName]) {
+            globalTeacherStats[tName] = { students: 0, discountAmount: 0, siblingCount: 0, grossAmount: 0, totalAmount: 0 };
+          }
+
+          globalTeacherStats[tName].students += 1;
+
+          let sDiscount = 0;
+          if (fId && globalFamilyCounts[fId] >= 2) {
+            sDiscount = SIBLING_DISCOUNT_PER_HEAD;
+            totalGlobalSiblingDiscount += sDiscount;
+            globalTeacherStats[tName].discountAmount += sDiscount;
+            globalTeacherStats[tName].siblingCount += 1;
+          }
+
+          if (s.isPaid === true || s.status === 'paid' || s.paymentStatus === 'paid') {
+            paidStudentCount++;
+          }
+        });
+
+        Object.keys(globalTeacherStats).forEach(tName => {
+          const item = globalTeacherStats[tName];
+          item.grossAmount = item.students * rate;
+          item.totalAmount = Math.max(0, item.grossAmount - item.discountAmount);
+        });
+
+        const expectedGross = totalStudentCount * rate;
+        expectedTotalGlobal = Math.max(0, expectedGross - totalGlobalSiblingDiscount);
+        const paidTotal = paidStudentCount * rate;
+
+        totalCollectedIncome = paidTotal;
+
+        document.getElementById('fin-expected-income').innerText = expectedTotalGlobal.toLocaleString() + ' ₭';
+        document.getElementById('fin-total-sibling-discount').innerText = `-${totalGlobalSiblingDiscount.toLocaleString()} ₭`;
+        document.getElementById('fin-total-collected').innerText = totalCollectedIncome.toLocaleString() + ' ₭';
+
+        recalculateFinancialSummary();
+
+      } catch (err) {
+        console.error("Error calculating overall income:", err);
+      }
+    }
+
+    function renderTeacherStatsList() {
+      const listContainer = document.getElementById('fin-teacher-list');
+      const keys = Object.keys(globalTeacherStats);
+      const currentMonth = document.getElementById('salary-month').value;
+
+      if (keys.length === 0) {
+        listContainer.innerHTML = `<div style="color:#94a3b8; text-align:center;">ບໍ່ພົບຂໍ້ມູນອາຈານ</div>`;
+        return;
+      }
+
+      listContainer.innerHTML = keys.map(name => {
+        const info = globalTeacherStats[name];
+        const paidRecord = paymentHistoryList.find(p => p.teacherName === name && p.salaryMonth === currentMonth && p.type !== 'owner');
+        const isPaid = !!paidRecord;
+
+        return `
+          <div class="teacher-item-card">
+            <div class="teacher-left-col">
+              <div class="teacher-head">👨‍🏫 ອາຈານ ${name} (${info.students} ຄົນ)</div>
+              <div>
+                ${isPaid 
+                  ? `<span class="badge-status paid">✅ ຈ່າຍແລ້ວ</span>` 
+                  : `<button class="btn-pay-action" onclick="quickPayTeacher('${name}')">💵 ຈ່າຍເງິນ</button>`}
+              </div>
+            </div>
+            <div class="teacher-right-col">
+              <div class="teacher-sub">ລວມເງິນ: <b>${info.grossAmount.toLocaleString()} ₭</b></div>
+              <div class="teacher-sub"><span class="disc">ສ່ວນຫຼຸດ (${info.siblingCount} ຄົນ): -${info.discountAmount.toLocaleString()} ₭</span></div>
+              <div class="teacher-sub">ຍອດສຸດທິ: <b style="color:#16a34a;">${info.totalAmount.toLocaleString()} ₭</b></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.quickPayTeacher = function(teacherName) {
+      document.getElementById('teacher-select').value = teacherName;
+      onTeacherChange().then(() => {
+        processPaymentAndPrint();
+      });
+    }
+
+    async function onTeacherChange() {
+      const selectedTeacher = document.getElementById('teacher-select').value;
+      const tbody = document.getElementById('hours-tbody');
+      const siblingListEl = document.getElementById('sibling-list');
+
+      if (!selectedTeacher) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">ກະລຸນາເລືອກອາຈານ...</td></tr>`;
+        siblingListEl.innerHTML = `<div style="color:#92400e;">ກະລຸນາເລືອກອາຈານ...</div>`;
+        resetTeacherForm();
+        return;
+      }
+
+      const teacherObj = teachersList.find(t => t.name === selectedTeacher);
+      currentSharePercent = teacherObj ? Number(teacherObj.percent || 50) : 50;
+
+      try {
+        const studentSnap = await getDocs(collection(db, "students"));
+        
+        const globalFamilyCounts = {};
+        studentSnap.forEach(doc => {
+          const s = doc.data();
+          const fId = s.familyId || s.familyCode || s.houseId;
+          if (fId) globalFamilyCounts[fId] = (globalFamilyCounts[fId] || 0) + 1;
+        });
+
+        const scheduleGroup = {};
+        currentSiblingDetails = [];
+        let totalAutoDiscount = 0;
+
+        studentSnap.forEach(doc => {
+          const s = doc.data();
+          const sTeacher = s.teacher || s.teacherName || s.teacher_name || s.selectTeacher;
+          const sRoom = s.room || s.schedule || s.class || s.time || 'ບໍ່ໄດ້ລະບຸ';
+          const fId = s.familyId || s.familyCode || s.houseId;
+
+          if (sTeacher === selectedTeacher) {
+            if (!scheduleGroup[sRoom]) scheduleGroup[sRoom] = 0;
+            scheduleGroup[sRoom]++;
+
+            if (fId && globalFamilyCounts[fId] >= 2) {
+              totalAutoDiscount += SIBLING_DISCOUNT_PER_HEAD;
+              currentSiblingDetails.push({
+                name: s.name || s.studentName || 'ນັກຮຽນ',
+                familyId: fId,
+                room: sRoom,
+                discount: SIBLING_DISCOUNT_PER_HEAD
+              });
+            }
+          }
+        });
+
+        currentSlots = Object.keys(scheduleGroup).map(roomName => ({
+          time: roomName,
+          students: scheduleGroup[roomName]
+        }));
+
+        if (currentSiblingDetails.length > 0) {
+          siblingListEl.innerHTML = currentSiblingDetails.map(item => `
+            <div>• <b>${item.name}</b> [${item.familyId}] (-${item.discount.toLocaleString()} ₭)</div>
+          `).join('');
+        } else {
+          siblingListEl.innerHTML = `<div style="color:#92400e;">✅ ບໍ່ມີສ່ວນຫຼຸດອ້າຍນ້ອງ</div>`;
+        }
+
+        document.getElementById('discount-cost').value = totalAutoDiscount;
+        calculateTotal();
+
+      } catch (err) {
+        console.error("Error fetching teacher students:", err);
+      }
+    }
+
+    function resetTeacherForm() {
+      currentSlots = [];
+      calculateTotal();
+    }
+
+    function calculateTotal() {
+      const rate = Number(document.getElementById('tuition-select').value) || 0;
+      const discount = Number(document.getElementById('discount-cost').value) || 0;
+      const materialCost = Number(document.getElementById('material-cost').value) || 0;
+
+      let totalStudents = 0;
+      currentSlots.forEach(s => totalStudents += Number(s.students || 0));
+
+      const grossTuition = totalStudents * rate;
+      const tuitionTotal = Math.max(0, grossTuition - discount);
+      const teacherShare = tuitionTotal * (currentSharePercent / 100);
+      const grandTotal = teacherShare + materialCost;
+
+      document.getElementById('txt-share-percent').innerText = `${currentSharePercent}%`;
+      document.getElementById('txt-total-students').innerText = `${totalStudents} ຄົນ`;
+      document.getElementById('txt-gross-tuition').innerText = grossTuition.toLocaleString() + ' ₭';
+      document.getElementById('txt-discount').innerText = `-${discount.toLocaleString()} ₭`;
+      document.getElementById('txt-teacher-share').innerText = teacherShare.toLocaleString() + ' ₭';
+      document.getElementById('txt-grand-total').innerText = grandTotal.toLocaleString() + ' ₭';
+
+      renderHoursTable();
+    }
+
+    function renderHoursTable() {
+      const tbody = document.getElementById('hours-tbody');
+      const rate = Number(document.getElementById('tuition-select').value) || 0;
+
+      if (currentSlots.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">ບໍ່ພົບຂໍ້ມູນ</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = currentSlots.map(s => `
+        <tr>
+          <td>🕒 ${s.time}</td>
+          <td><b>${s.students}</b> ຄົນ</td>
+          <td><b>${(s.students * rate).toLocaleString()} ₭</b></td>
+        </tr>
+      `).join('');
+    }
+
+    function listenRealtimePayments() {
+      const tbody = document.getElementById('realtime-tbody');
+      const q = query(collection(db, "teacher_payments"), orderBy("createdAt", "desc"));
+
+      onSnapshot(q, (snapshot) => {
+        paymentHistoryList = [];
+        if (snapshot.empty) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding:12px;">ບໍ່ມີປະວັດການຈ່າຍເງິນ</td></tr>`;
+          recalculateFinancialSummary();
+          return;
+        }
+
+        tbody.innerHTML = snapshot.docs.map(doc => {
+          const data = { id: doc.id, ...doc.data() };
+          paymentHistoryList.push(data);
+
+          const isOwner = data.type === 'owner';
+
+          return `
+            <tr style="${isOwner ? 'background:#fffbeb;' : ''}">
+              <td>
+                <div style="font-weight:700; color:${isOwner ? '#d97706' : 'var(--primary)'};">${data.billNo || '-'}</div>
+                <div style="font-size:9px; color:#64748b;">${data.payDate || ''}</div>
+              </td>
+              <td><b>${isOwner ? '👑 ເຈົ້າຂອງ (Owner Share)' : data.teacherName || '-'}</b></td>
+              <td style="color:${isOwner ? '#d97706' : '#16a3a4'}; font-weight:700;">${Number(data.grandTotal || 0).toLocaleString()} ₭</td>
+              <td style="text-align:center;">
+                <button class="btn-reprint" onclick="reprintBill('${data.id}')">🖨️ ເບິ່ງບິນ</button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        recalculateFinancialSummary();
+
+      }, (error) => {
+        console.error("Realtime listener error:", error);
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">❌ ໂຫຼດ Realtime ບໍ່ໄດ້</td></tr>`;
+      });
+    }
+
+    function recalculateFinancialSummary() {
+      const currentMonth = document.getElementById('salary-month').value;
+      let totalTeacherPayout = 0;
+      let totalOwnerPayout = 0;
+      isOwnerPaid = false;
+
+      paymentHistoryList.forEach(p => {
+        if (p.salaryMonth === currentMonth) {
+          if (p.type === 'owner') {
+            isOwnerPaid = true;
+            totalOwnerPayout += Number(p.grandTotal || 0);
+          } else {
+            totalTeacherPayout += Number(p.grandTotal || 0);
+          }
+        }
+      });
+
+      document.getElementById('fin-total-teacher-payout').innerText = `-${totalTeacherPayout.toLocaleString()} ₭`;
+
+      const remainingAfterTeachers = Math.max(0, expectedTotalGlobal - totalTeacherPayout);
+      document.getElementById('fin-remaining-after-teachers').innerText = `${remainingAfterTeachers.toLocaleString()} ₭`;
+
+      calculatedOwnerShare = remainingAfterTeachers * 0.30;
+      document.getElementById('fin-owner-share').innerText = `${calculatedOwnerShare.toLocaleString()} ₭`;
+
+      const netProfit = Math.max(0, remainingAfterTeachers - calculatedOwnerShare);
+      document.getElementById('fin-net-profit').innerText = `${netProfit.toLocaleString()} ₭`;
+
+      renderTeacherStatsList();
+
+      const allTeacherNames = Object.keys(globalTeacherStats);
+      let allPaid = allTeacherNames.length > 0;
+
+      allTeacherNames.forEach(name => {
+        const hasPaid = paymentHistoryList.some(p => p.teacherName === name && p.salaryMonth === currentMonth && p.type !== 'owner');
+        if (!hasPaid) allPaid = false;
+      });
+
+      const btnOwnerPay = document.getElementById('btn-owner-pay');
+
+      if (isOwnerPaid) {
+        btnOwnerPay.disabled = true;
+        btnOwnerPay.className = "btn-owner-pay completed";
+        btnOwnerPay.innerText = "✅ ຈ່າຍໃຫ້ເຈົ້າຂອງສຳເລັດແລ້ວ (ເດືອນນີ້)";
+      } else if (allPaid && calculatedOwnerShare > 0) {
+        btnOwnerPay.disabled = false;
+        btnOwnerPay.className = "btn-owner-pay active";
+        btnOwnerPay.innerText = `👑 ຈ່າຍໃຫ້ເຈົ້າຂອງ (30%): ${calculatedOwnerShare.toLocaleString()} ₭`;
+      } else {
+        btnOwnerPay.disabled = true;
+        btnOwnerPay.className = "btn-owner-pay";
+        btnOwnerPay.innerText = "🔒 ຍັງຈ່າຍອາຈານບໍ່ຄົບ (ບໍ່ສາມາດຈ່າຍເຈົ້າຂອງໄດ້)";
+      }
+    }
+
+    async function processOwnerPayment() {
+      const billNo = `OWN-${Date.now().toString().slice(-4)}${Math.floor(1000 + Math.random() * 9000)}`;
+      const payDate = document.getElementById('pay-date').value;
+      const salaryMonth = document.getElementById('salary-month').value;
+
+      let teachersSummaryData = [];
+      Object.keys(globalTeacherStats).forEach(tName => {
+        teachersSummaryData.push({
+          name: tName,
+          ...globalTeacherStats[tName]
+        });
+      });
+
+      const ownerRecord = {
+        billNo,
+        payDate,
+        salaryMonth,
+        teacherName: 'ເຈົ້າຂອງ (Owner)',
+        type: 'owner',
+        expectedTotal: expectedTotalGlobal,
+        teachersSummary: teachersSummaryData,
+        grandTotal: calculatedOwnerShare,
+        createdAt: serverTimestamp()
+      };
+
+      try {
+        await addDoc(collection(db, "teacher_payments"), ownerRecord);
+
+        // 🟢 ຕັ້ງຄ່າສະແດງຜົນໃນປັອບອັບບິນ 58mm ສຳລັບເຈົ້າຂອງ (ຈັດຊັ້ນໃໝ່)
+        document.getElementById('r-bill-type').innerText = "ໃບຈ່າຍສ່ວນແບ່ງເຈົ້າຂອງ (OWNER)";
+        document.getElementById('r-bill-no').innerText = billNo;
+        document.getElementById('r-date').innerText = payDate;
+        document.getElementById('r-salary-month').innerText = salaryMonth;
+        document.getElementById('r-teacher-name').innerText = "ເຈົ້າຂອງ (Owner Share)";
+
+        let htmlRows = `<tr><td colspan="3" style="font-weight:bold; padding-top:2px;">ລາຍລະອຽດການຈ່າຍຄູທັງໝົດ:</td></tr>`;
+        teachersSummaryData.forEach(ts => {
+          htmlRows += `<tr><td colspan="2">• ${ts.name} (${ts.students}ຄົນ)</td><td class="num">${ts.totalAmount.toLocaleString()}</td></tr>`;
+        });
+        
+        document.getElementById('r-items-body').innerHTML = htmlRows;
+        document.getElementById('r-summary-box').style.display = 'none';
+        document.getElementById('r-grand-total').innerText = calculatedOwnerShare.toLocaleString() + ' ₭';
+
+        document.getElementById('receipt-modal').style.display = 'flex';
+
+      } catch (err) {
+        console.error("Error paying owner:", err);
+        alert("❌ ບັນທຶກການຈ່າຍເງິນບໍ່ສຳເລັດ");
+      }
+    }
+
+    window.reprintBill = function(docId) {
+      const item = paymentHistoryList.find(p => p.id === docId);
+      if (!item) {
+        alert("❌ ບໍ່ພົບຂໍ້ມູນໃບບິນນີ້");
+        return;
+      }
+
+      const isOwner = item.type === 'owner';
+      document.getElementById('r-bill-type').innerText = isOwner ? "ໃບຈ່າຍສ່ວນແບ່ງເຈົ້າຂອງ (OWNER)" : "ໃບຈ່າຍເງິນເດືອນອາຈານ (PAYSLIP)";
+      document.getElementById('r-bill-no').innerText = item.billNo || '';
+      document.getElementById('r-date').innerText = item.payDate || '';
+      document.getElementById('r-salary-month').innerText = item.salaryMonth || '';
+      document.getElementById('r-teacher-name').innerText = item.teacherName || '';
+
+      document.getElementById('r-summary-box').style.display = 'block';
+
+      if (isOwner) {
+        let htmlRows = `<tr><td colspan="3" style="font-weight:bold; padding-top:2px;">ລາຍລະອຽດການຈ່າຍຄູທັງໝົດ:</td></tr>`;
+        if (item.teachersSummary) {
+          item.teachersSummary.forEach(ts => {
+            htmlRows += `<tr><td colspan="2">• ${ts.name} (${ts.students}ຄົນ)</td><td class="num">${ts.totalAmount.toLocaleString()}</td></tr>`;
+          });
+        }
+        document.getElementById('r-items-body').innerHTML = htmlRows;
+        document.getElementById('r-summary-box').style.display = 'none';
+        document.getElementById('r-grand-total').innerText = Number(item.grandTotal || 0).toLocaleString() + ' ₭';
+      } else {
+        document.getElementById('r-share-percent').innerText = `${item.sharePercent || 50}%`;
+        const slots = item.slots || [];
+        const rate = item.tuitionRate || 0;
+
+        document.getElementById('r-items-body').innerHTML = slots.map(s => `
+          <tr>
+            <td>${s.time}</td>
+            <td class="num">${s.students} ຄົນ</td>
+            <td class="num">${(s.students * rate).toLocaleString()}</td>
+          </tr>
+        `).join('');
+
+        document.getElementById('r-gross-tuition').innerText = Number(item.grossTuition || 0).toLocaleString() + ' ₭';
+        document.getElementById('r-discount').innerText = `-${Number(item.discount || 0).toLocaleString()} ₭`;
+        document.getElementById('r-tuition').innerText = Number(item.tuitionTotal || 0).toLocaleString() + ' ₭';
+        document.getElementById('r-share').innerText = Number(item.teacherShare || 0).toLocaleString() + ' ₭';
+        document.getElementById('r-material').innerText = Number(item.materialCost || 0).toLocaleString() + ' ₭';
+        document.getElementById('r-grand-total').innerText = Number(item.grandTotal || 0).toLocaleString() + ' ₭';
+      }
+
+      document.getElementById('receipt-modal').style.display = 'flex';
+    };
+
+    async function processPaymentAndPrint() {
+      const teacherName = document.getElementById('teacher-select').value;
+      if (!teacherName) {
+        alert("❌ ກະລຸນາເລືອກອາຈານກ່ອນ!");
+        return;
+      }
+
+      const billNo = document.getElementById('bill-no').value;
+      const payDate = document.getElementById('pay-date').value;
+      const salaryMonth = document.getElementById('salary-month').value;
+      const rate = Number(document.getElementById('tuition-select').value) || 0;
+      const discount = Number(document.getElementById('discount-cost').value) || 0;
+      const materialCost = Number(document.getElementById('material-cost').value) || 0;
+
+      let totalStudents = 0;
+      currentSlots.forEach(s => totalStudents += Number(s.students || 0));
+
+      const grossTuition = totalStudents * rate;
+      const tuitionTotal = Math.max(0, grossTuition - discount);
+      const teacherShare = tuitionTotal * (currentSharePercent / 100);
+      const grandTotal = teacherShare + materialCost;
+
+      const paymentRecord = {
+        billNo,
+        payDate,
+        salaryMonth,
+        teacherName,
+        type: 'teacher',
+        totalStudents,
+        tuitionRate: rate,
+        grossTuition,
+        discount,
+        tuitionTotal,
+        sharePercent: currentSharePercent,
+        teacherShare,
+        materialCost,
+        grandTotal,
+        slots: currentSlots,
+        createdAt: serverTimestamp()
+      };
+
+      try {
+        await addDoc(collection(db, "teacher_payments"), paymentRecord);
+
+        // 🟢 ຕັ້ງຄ່າສະແດງຜົນໃນປັອບອັບບິນ 58mm ສຳລັບຄູ (ຈັດຊັ້ນໃໝ່)
+        document.getElementById('r-bill-type').innerText = "ໃບຈ່າຍເງິນເດືອນອາຈານ (PAYSLIP)";
+        document.getElementById('r-bill-no').innerText = billNo;
+        document.getElementById('r-date').innerText = payDate;
+        document.getElementById('r-salary-month').innerText = salaryMonth;
+        document.getElementById('r-teacher-name').innerText = teacherName;
+        document.getElementById('r-share-percent').innerText = `${currentSharePercent}%`;
+
+        document.getElementById('r-summary-box').style.display = 'block';
+
+        document.getElementById('r-items-body').innerHTML = currentSlots.map(s => `
+          <tr>
+            <td>${s.time}</td>
+            <td class="num">${s.students} ຄົນ</td>
+            <td class="num">${(s.students * rate).toLocaleString()}</td>
+          </tr>
+        `).join('');
+
+        document.getElementById('r-gross-tuition').innerText = grossTuition.toLocaleString() + ' ₭';
+        document.getElementById('r-discount').innerText = `-${discount.toLocaleString()} ₭`;
+        document.getElementById('r-tuition').innerText = tuitionTotal.toLocaleString() + ' ₭';
+        document.getElementById('r-share').innerText = teacherShare.toLocaleString() + ' ₭';
+        document.getElementById('r-material').innerText = materialCost.toLocaleString() + ' ₭';
+        document.getElementById('r-grand-total').innerText = grandTotal.toLocaleString() + ' ₭';
+
+        document.getElementById('receipt-modal').style.display = 'flex';
+        generateBillNo();
+
+      } catch (err) {
+        console.error("Error saving payment:", err);
+        alert("❌ ບັນທຶກຂໍ້ມູນການຈ່າຍເງິນບໍ່ສຳເລັດ");
+      }
+    }
+  </script>
+</body>
+</html>

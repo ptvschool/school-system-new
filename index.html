@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School System - ລະບົບຈັດການໂຮງຮຽນ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Noto Sans Lao', sans-serif; }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.95) 0%, rgba(29, 78, 216, 1) 100%);
+            color: white !important;
+            box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.4);
+        }
+
+        .nav-link {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link:hover:not(.active) {
+            background-color: rgba(30, 41, 59, 0.8);
+            color: #ffffff !important;
+            transform: translateX(6px);
+            box-shadow: -4px 0 0 0 #3b82f6 inset;
+        }
+
+        .nav-link:hover span:first-child {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .nav-link span:first-child {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        /* ລະບົບ Transition ສຳລັບ Sidebar ເວລາເຊື່ອງ/ສະແດງ */
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 h-screen flex overflow-hidden relative">
+
+    <!-- ==========================================
+         SIDEBAR (ແຖບເມນູດ້ານຊ້າຍ) - ເພີ່ມ Class ສຳລັບ Mobile Overlay
+    ========================================== -->
+    <aside id="sidebar" class="w-64 bg-slate-950 border-r border-slate-800/80 flex flex-col justify-between shrink-0 select-none fixed inset-y-0 left-0 z-50 md:relative transform -translate-x-full md:translate-x-0">
+        <div>
+            <!-- Header/Logo ແລະ ປຸ່ມ Pin/Unpin -->
+            <div class="p-5 border-b border-slate-800/80 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-blue-600/20 text-blue-500 rounded-xl border border-blue-500/30 text-2xl">
+                        🏫
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-white text-base leading-tight">School System</h2>
+                        <p class="text-[11px] text-slate-400 font-medium">ລະບົບຈັດການຂໍ້ມູນໂຮງຮຽນ</p>
+                    </div>
+                </div>
+                <!-- ປຸ່ມຮູບເຂັມໝຸດ (Pin) ສຳລັບລັອກ/ປົດລັອກ Sidebar -->
+                <button onclick="togglePinSidebar()" id="pin-btn" title="ລັອກ/ປົດລັອກເມນູ" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer">
+                    📌
+                </button>
+            </div>
+
+            <!-- Menu Category: ດາດບອດ -->
+            <div class="p-3" id="menu-group-dashboard">
+                <p class="px-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">ພາບລວມ</p>
+                <nav class="space-y-1">
+                    <a href="#" id="nav-dashboard" onclick="loadPage('dashboard.html', this)" class="nav-link active flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white">
+                        <span>📊</span>
+                        <span>ດາດບອດ</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Menu Category: ການຮຽນ-ການສອນ -->
+            <div class="p-3 pt-0" id="menu-group-academics">
+                <p class="px-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">ການຮຽນ-ການສອນ</p>
+                <nav class="space-y-1">
+                   <!-- <a href="#" id="nav-attendance" onclick="loadPage('attendance.html', this)" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white">
+                        <span>📋</span>
+                        <span>ໝາຍຂາດນັກຮຽນ</span>
+                     </a> --> 
+                    <a href="#" id="nav-scores" onclick="loadPage('scores.html', this)" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white">
+                        <span>📊</span>
+                        <span>ປ້ອນຄະແນນ</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Menu Category: ລະບົບການເງິນ -->
+            <div class="p-3 pt-0" id="menu-group-finance">
+                <p class="px-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">ລະບົບການເງິນ (FINANCE)</p>
+                <nav class="space-y-1">
+                    <a href="#" id="nav-register" onclick="loadPage('register.html', this)" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white">
+                        <span>📝</span>
+                        <span>ລົງທະບຽນ</span>
+                    </a>
+                    <a href="#" id="nav-payment" onclick="loadPage('payment.html', this)" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white">
+                        <span>💳</span>
+                        <span>ການສຳລະເງິນ</span>
+                    </a>
+                    <a href="#" id="nav-student-payments" onclick="loadPage('student-payments.html', this)" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white">
+                        <span>💳</span>
+                        <span>ຕິດຕາມຈ່າຍຄ່າຮຽນ</span>
+                    </a>
+                    <a href="#" id="nav-payroll" onclick="loadPage('payroll.html', this)" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white">
+                        <span>💵</span>
+                        <span>ຈ່າຍເງິນເດືອນຄູ</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Menu Category: ຕັ້ງຄ່າ -->
+            <div class="p-3 pt-0" id="menu-group-settings">
+                <p class="px-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">ຕັ້ງຄ່າ</p>
+                <nav class="space-y-1">
+                    <a href="#" id="nav-users" onclick="loadPage('users.html', this)" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white">
+                        <span>👥</span>
+                        <span>ຈັດການຜູ້ໃຊ້</span>
+                    </a>
+                    <a href="#" id="nav-settings" onclick="loadPage('settings.html', this)" class="nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white">
+                        <span>⚙️</span>
+                        <span>ຕັ້ງຄ່າ</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- User Profile Footer -->
+        <div class="p-3 border-t border-slate-800/80">
+            <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-900/50 border border-slate-800/50">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div id="user-initial" class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white text-xs shrink-0">
+                        A
+                    </div>
+                    <div class="min-w-0">
+                        <p id="user-name" class="text-xs font-semibold text-white truncate">Admin</p>
+                        <p id="user-email" class="text-[10px] text-slate-400 truncate">admin@school.com</p>
+                    </div>
+                </div>
+                
+                <button onclick="logout()" title="ອອກຈາກລະບົບ" class="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200 shrink-0 cursor-pointer group">
+                    <svg class="w-5 h-5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Backdrop ສຳລັບກົດປິດ Sidebar ເວລາother ມັນເປີດໃນมือถือ -->
+    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <!-- ==========================================
+         MAIN CONTENT AREA (ມີປຸ່ມ Menu ມືຖືເພີ່ມເຕີມ)
+    ========================================== -->
+    <main class="flex-1 bg-slate-100 h-full overflow-hidden flex flex-col">
+        <!-- Top bar ສໍາລັບມືຖື ເພື່ອກົດເປີດ/ປິດ Sidebar -->
+        <div class="bg-slate-900 border-b border-slate-800 p-3 flex items-center md:hidden shrink-0">
+            <button onclick="toggleSidebar()" class="p-2 text-slate-300 hover:text-white bg-slate-800 rounded-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+            <span class="ml-3 font-bold text-white text-sm">School System</span>
+        </div>
+
+        <div class="flex-1 overflow-hidden">
+            <iframe id="main-frame" src="dashboard.html" class="w-full h-full border-none"></iframe>
+        </div>
+    </main>
+
+    <!-- ==========================================
+         JAVASCRIPT
+    ========================================== -->
+    <script>
+        let isPinned = false; // ສະຖານະການລັອກ Sidebar
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentUserStr = localStorage.getItem('currentUser');
+            if (!currentUserStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUserStr);
+
+            document.getElementById('user-name').innerText = user.name || 'User';
+            document.getElementById('user-email').innerText = user.email || user.phone || '';
+            document.getElementById('user-initial').innerText = (user.name ? user.name.charAt(0).toUpperCase() : 'U');
+
+            const role = user.role;
+
+            if (role === 'teacher') {
+                const dashboardGroup = document.getElementById('menu-group-dashboard');
+                const financeGroup = document.getElementById('menu-group-finance');
+                const settingsGroup = document.getElementById('menu-group-settings');
+
+                if (dashboardGroup) dashboardGroup.style.display = 'none';
+                if (financeGroup) financeGroup.style.display = 'none';
+                if (settingsGroup) settingsGroup.style.display = 'none';
+
+                const attendanceLink = document.getElementById('nav-attendance');
+                if (attendanceLink) {
+                    loadPage('attendance.html', attendanceLink);
+                }
+            }
+        });
+
+        function loadPage(pageUrl, element) {
+            const frame = document.getElementById('main-frame');
+            if (frame) {
+                frame.src = pageUrl;
+            }
+
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(link => link.classList.remove('active'));
+
+            if (element) {
+                element.classList.add('active');
+            }
+
+            // ຖ້າເປັນໜ້າຈໍມືຖື ແລະ ບໍ່ໄດ້ລັອກ Sidebar ໄວ້ ໃຫ້ເຊື່ອງ Sidebar ອັດຕະໂນມັດຫຼັງຈາກກົດເລືອກເມນູ
+            if (window.innerWidth < 768 && !isPinned) {
+                toggleSidebar();
+            }
+        }
+
+        // ຟັງຊັນເປີດ-ປິດ Sidebar ຜ່ານປຸ່ມ Menu ມືຖື
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        // ຟັງຊັນປຸ່ມເຂັມໝຸດ (Pin/Unpin)
+        function togglePinSidebar() {
+            isPinned = !isPinned;
+            const pinBtn = document.getElementById('pin-btn');
+            
+            if (isPinned) {
+                pinBtn.style.opacity = '1';
+                pinBtn.style.background = 'rgba(59, 130, 246, 0.2)';
+                pinBtn.title = 'ປົດລັອກເມນູ (Unpinned)';
+            } else {
+                pinBtn.style.opacity = '0.6';
+                pinBtn.style.background = 'transparent';
+                pinBtn.title = 'ລັອກເມນູ (Pinned)';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
